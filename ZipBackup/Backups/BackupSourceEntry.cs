@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ZipBackup.Backups {
-    class BackupSourceEntry : IComparable {
+    public class BackupSourceEntry : IComparable {
         public string Name { get; set; }
         public string Folder { get; set; }
 

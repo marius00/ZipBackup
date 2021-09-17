@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ZipBackup.Backups {
-    class BackupDestinationEntry {
+    public class BackupDestinationEntry {
         public string Folder { get; set; }
     }
 }

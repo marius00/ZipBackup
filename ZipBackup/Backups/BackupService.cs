@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Ionic.Zip;
 using log4net;
 using ZipBackup.Services;
+using ZipBackup.Utils;
 
 namespace ZipBackup.Backups {
     class BackupService {
@@ -22,7 +23,23 @@ namespace ZipBackup.Backups {
 
         public void Backup() {
             var sources = _settingsService.BackupSources.ToList();
+            if (sources.Count == 0)
+                return;
+
             var destinations = _settingsService.BackupDestinations.ToList();
+            if (destinations.Count == 0) {
+                // TODO: Error?
+                Logger.Warn($"Attempting to perform backup of {sources.Count} sources, but no destinations are configured. Aborting.");
+                return;
+            }
+
+            // Include our own config as well
+            sources.Add(new BackupSourceEntry {
+                Folder = GlobalPaths.CoreFolder,
+                Name = "ZipBackup",
+                InclusionMask = ".json",
+                Recursive = false
+            });
 
             foreach (var source in sources) {
                 var tempFileName = Path.GetTempFileName();

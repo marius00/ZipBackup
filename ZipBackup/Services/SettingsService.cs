@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ZipBackup.Backups;
 
 namespace ZipBackup.Services {
-    class SettingsService {
+    public class SettingsService {
         public event EventHandler OnMutate;
         private List<BackupSourceEntry> _backupSources;
         private List<BackupDestinationEntry> _backupDestinations;

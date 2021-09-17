@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using ZipBackup.Backups;
 using ZipBackup.Services;
@@ -18,6 +19,7 @@ namespace ZipBackup {
                 settingsService.UUID = Guid.NewGuid().ToString();
             }
 
+
             var bs = new BackupService(settingsService);
 
             bs.Backup(new BackupSourceEntry {
@@ -33,7 +35,7 @@ namespace ZipBackup {
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Form1(settingsService));
         }
     }
 }
