@@ -18,8 +18,6 @@ namespace ZipBackup {
                 settingsService.UUID = Guid.NewGuid().ToString();
             }
 
-            string xyz = string.Format("{0}-{1:-dddd}-MM", "hi", DateTime.Now);
-
             var bs = new BackupService(settingsService);
 
             bs.Backup(new BackupSourceEntry {

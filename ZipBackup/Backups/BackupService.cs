@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Ionic.Zip;
 using log4net;
 using ZipBackup.Services;
 
@@ -80,10 +80,15 @@ namespace ZipBackup.Backups {
                 return;
             }
 
-            using (ZipArchive zip = ZipFile.Open(outputFilename, ZipArchiveMode.Create)) {
+            using (ZipFile zip = new ZipFile()) {
+                if (!string.IsNullOrEmpty(_settingsService.ZipPassword)) {
+                    zip.Password = _settingsService.ZipPassword;
+                    zip.Encryption = EncryptionAlgorithm.WinZipAes256;
+                }
+
                 foreach (var file in files) {
                     try {
-                        zip.CreateEntryFromFile(file, Sanitize(file, source.Folder), source.Compression);
+                        zip.AddFile(file, Sanitize(file, source.Folder)); // TODO: Filename becomes folder i think..
                     }
                     catch (IOException) {
                         FileInfo fileInfo = new FileInfo(file);
@@ -92,7 +97,7 @@ namespace ZipBackup.Backups {
                             var tempFileName = Path.GetTempFileName();
                             File.Copy(file, tempFileName, true);
                             try {
-                                zip.CreateEntryFromFile(tempFileName, Sanitize(file, source.Folder), source.Compression);
+                                zip.AddFile(tempFileName, Sanitize(file, source.Folder)); // TODO: Filename becomes folder i think..
                             }
                             finally {
                                 File.Delete(tempFileName);
@@ -103,6 +108,8 @@ namespace ZipBackup.Backups {
                             throw;
                         }
                     }
+
+                    zip.Save(outputFilename);
                 }
             }
 
@@ -120,7 +127,8 @@ namespace ZipBackup.Backups {
         }
 
         private string Sanitize(string filePath, string prefix) {
-            return filePath.Replace(_localAppdata, "%LocalAppData%")
+            return Path.GetDirectoryName(filePath)
+                .Replace(_localAppdata, "%LocalAppData%")
                 .Replace(_userProfile, "%UserProfile%")
                 .Replace(prefix, new DirectoryInfo(prefix).Name);
         }
