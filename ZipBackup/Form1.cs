@@ -18,6 +18,14 @@ namespace ZipBackup {
             var srcConfig = new SourceConfig(_settingsService);
             tabPage1.Controls.Add(srcConfig);
             srcConfig.Show();
+
+            var dstConfig = new DestinationConfig();
+            tabPage2.Controls.Add(dstConfig);
+            dstConfig.Show();
+
+            var miscConfig = new MiscConfig(_settingsService);
+            tabPage3.Controls.Add(miscConfig);
+            miscConfig.Show();
         }
     }
 }

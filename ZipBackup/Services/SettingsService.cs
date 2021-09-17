@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ZipBackup.Backups;
+using ZipBackup.Utils;
 
 namespace ZipBackup.Services {
     public class SettingsService {
@@ -13,7 +15,7 @@ namespace ZipBackup.Services {
         private string _filenamePattern;
         private string _uuid;
         private string _zipPassword;
-        
+
         public void AddBackupSource(BackupSourceEntry entry) {
             _backupSources ??= new List<BackupSourceEntry>();
 
@@ -64,6 +66,9 @@ namespace ZipBackup.Services {
             }
         }
 
+        /// <summary>
+        /// Password encrypted using the CPU serial
+        /// </summary>
         public string ZipPassword {
             get => _zipPassword;
             set {
@@ -72,6 +77,18 @@ namespace ZipBackup.Services {
             }
         }
 
-        
+        public void SetZipPassword(string password) {
+            ZipPassword = EncryptionUtil.EncryptString(password, EncryptionUtil.GetCpuSerial());
+        }
+
+        /// <summary>
+        /// Password encrypted using the CPU serial
+        /// </summary>
+        [JsonIgnore]
+        public string ZipPasswordPlaintext {
+            get => EncryptionUtil.DecryptString(_zipPassword, EncryptionUtil.GetCpuSerial());
+        }
+
+
     }
 }

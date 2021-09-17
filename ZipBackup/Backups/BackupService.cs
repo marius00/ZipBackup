@@ -98,8 +98,9 @@ namespace ZipBackup.Backups {
             }
 
             using (ZipFile zip = new ZipFile()) {
-                if (!string.IsNullOrEmpty(_settingsService.ZipPassword)) {
-                    zip.Password = _settingsService.ZipPassword;
+                var plaintextPassword = _settingsService.ZipPasswordPlaintext; // CPU heavy to read
+                if (!string.IsNullOrEmpty(plaintextPassword)) {
+                    zip.Password = plaintextPassword; ;
                     zip.Encryption = EncryptionAlgorithm.WinZipAes256;
                 }
 

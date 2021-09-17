@@ -19,7 +19,6 @@ namespace ZipBackup {
                 settingsService.UUID = Guid.NewGuid().ToString();
             }
 
-
             var bs = new BackupService(settingsService);
 
             bs.Backup(new BackupSourceEntry {

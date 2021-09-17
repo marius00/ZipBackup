@@ -28,6 +28,7 @@ namespace ZipBackup.UI {
         }
 
         private void SourceEntryForm_Load(object sender, EventArgs e) {
+            cbIncludeSubfodlers.Checked = Entry.Recursive;
             tbExclusionFilter.Text = Entry.ExclusionMask;
             tbInclusionFilter.Text = Entry.InclusionMask;
             tbName.Text = Entry.Name;
