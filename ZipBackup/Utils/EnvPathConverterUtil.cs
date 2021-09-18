@@ -10,11 +10,13 @@ namespace ZipBackup.Utils {
         private static readonly string LocalAppdata;
         private static readonly string AppData;
         private static readonly string UserProfile;
+        private static readonly string ProgramData;
 
         static EnvPathConverterUtil() {
             LocalAppdata = System.Environment.GetEnvironmentVariable("LocalAppData");
             AppData = System.Environment.GetEnvironmentVariable("AppData");
             UserProfile = System.Environment.GetEnvironmentVariable("UserProfile");
+            ProgramData = System.Environment.GetEnvironmentVariable("ProgramData");
         }
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace ZipBackup.Utils {
             return path
                 .Replace(LocalAppdata, "%LocalAppData%", StringComparison.InvariantCultureIgnoreCase)
                 .Replace(AppData, "%AppData%", StringComparison.InvariantCultureIgnoreCase)
+                .Replace(ProgramData, "%ProgramData%", StringComparison.InvariantCultureIgnoreCase)
                 .Replace(UserProfile, "%UserProfile%", StringComparison.InvariantCultureIgnoreCase);
         }
 
@@ -38,6 +41,7 @@ namespace ZipBackup.Utils {
             return path
                 .Replace("%LocalAppData%", LocalAppdata, StringComparison.InvariantCultureIgnoreCase)
                 .Replace("%AppData%", AppData, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("%ProgramData%", ProgramData, StringComparison.InvariantCultureIgnoreCase)
                 .Replace("%UserProfile%", UserProfile, StringComparison.InvariantCultureIgnoreCase);
         }
     }

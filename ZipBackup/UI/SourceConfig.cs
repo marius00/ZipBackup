@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipBackup.Backups;
 using ZipBackup.Services;
+using ZipBackup.UI.Dialogs;
 
 namespace ZipBackup.UI {
     public partial class SourceConfig : Form {
@@ -95,6 +96,18 @@ namespace ZipBackup.UI {
                         UpdateListview();
                     }
                 }
+            }
+        }
+
+        private void btnSuggestions_Click(object sender, EventArgs e) {
+            var sourceSuggestioDialog = new SourceSuggestions(_appSettings);
+            if (sourceSuggestioDialog.ShowDialog() == DialogResult.OK) {
+                _appSettings.AddBackupSource(new BackupSourceEntry {
+                    Name = sourceSuggestioDialog.ChosenSuggestion.Name,
+                    Folder = sourceSuggestioDialog.ChosenSuggestion.Path
+                });
+
+                UpdateListview();
             }
         }
     }
