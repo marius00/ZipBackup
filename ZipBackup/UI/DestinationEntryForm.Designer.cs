@@ -25,6 +25,7 @@ namespace ZipBackup.UI {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DestinationEntryForm));
             this.tbName = new System.Windows.Forms.TextBox();
             this.tbPath = new System.Windows.Forms.TextBox();
             this.lbName = new System.Windows.Forms.Label();
@@ -137,6 +138,7 @@ namespace ZipBackup.UI {
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DestinationEntryForm";

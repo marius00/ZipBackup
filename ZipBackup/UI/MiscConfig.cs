@@ -43,7 +43,13 @@ namespace ZipBackup.UI {
 
 
         private void btnSavePassword_Click(object sender, EventArgs e) {
-            _appSettings.SetZipPassword(maskedTextBox1.Text);
+            if (passwordInput1.Text != passwordInput2.Text) {
+                errorProvider1.SetError(passwordInput1, "The passwords does not match");
+            }
+            else {
+                errorProvider1.Clear();
+                _appSettings.SetZipPassword(passwordInput1.Text);
+            }
         }
     }
 }

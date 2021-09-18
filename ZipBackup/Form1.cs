@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 using ZipBackup.Services;
 using ZipBackup.UI;
@@ -26,6 +27,10 @@ namespace ZipBackup {
             var miscConfig = new MiscConfig(_appSettings);
             tabPage3.Controls.Add(miscConfig);
             miscConfig.Show();
+
+#if !DEBUG
+            ThreadPool.QueueUserWorkItem(m => UsageStatisticsReporter.ReportUsage());
+#endif
         }
     }
 }
