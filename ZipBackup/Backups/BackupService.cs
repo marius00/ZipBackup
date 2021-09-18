@@ -30,7 +30,6 @@ namespace ZipBackup.Backups {
 
             var destinations = _appSettings.BackupDestinations.ToList();
             if (destinations.Count == 0) {
-                // TODO: Error?
                 Logger.Warn($"Attempting to perform backup of {sources.Count} sources, but no destinations are configured. Aborting.");
                 return;
             }
@@ -43,10 +42,20 @@ namespace ZipBackup.Backups {
                 Recursive = false
             });
 
+
+
+            var plaintextPassword = _appSettings.ZipPasswordPlaintext; // CPU heavy to read
+            if (!string.IsNullOrEmpty(plaintextPassword) && _appSettings.CpuHash != EncryptionUtil.GetCpuSerial().GetHashCode()) {
+                Logger.Error("The CPU serial does not match the expected value. The zip encryption password must be reset before continuing");
+                // TODO: This could trigger an action which redirects to password config
+                ToastUtil.Show("ZipBackup disabled", "The CPU serial hash does not match the current setup.", "Please update the ZIP password under misc settings.");
+                return;
+            }
+
+
             foreach (var source in sources) {
                 var tempFileName = Path.GetTempFileName();
                 try {
-                    var plaintextPassword = _appSettings.ZipPasswordPlaintext; // CPU heavy to read
                     Backup(source, tempFileName, plaintextPassword);
                     foreach (var dest in destinations) {
                         File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true); // TODO: IOException
@@ -68,7 +77,7 @@ namespace ZipBackup.Backups {
             string folder = EnvPathConverterUtil.FromEnvironmentalPath(source.Folder);
             if (!Directory.Exists(folder)) {
                 Logger.Warn($"The requested directory {folder} does not exist");
-                // TODO: Log, notify?
+                // TODO: Log, notify? -- add to an error queue? Prevents duplicates and can be shown afterwards
                 return;
             }
 
@@ -119,7 +128,7 @@ namespace ZipBackup.Backups {
                             var tempFileName = Path.GetTempFileName();
                             File.Copy(file, tempFileName, true);
                             try {
-                                zip.AddFile(tempFileName, Sanitize(file, folder)); // TODO: Filename becomes folder i think..
+                                zip.AddFile(tempFileName, Sanitize(file, folder));
                             }
                             finally {
                                 File.Delete(tempFileName);

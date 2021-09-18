@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipBackup.Backups;
 using ZipBackup.Services;
+using ZipBackup.Utils;
 
 namespace ZipBackup.UI {
     public partial class DestinationConfig : Form {
@@ -21,7 +22,7 @@ namespace ZipBackup.UI {
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            ToastUtil.Show();
+            //ToastUtil.Show();
         }
 
         private void DestinationConfig_Load(object sender, EventArgs e) {

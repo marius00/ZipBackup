@@ -15,6 +15,7 @@ namespace ZipBackup.Services {
         private string _filenamePattern;
         private string _uuid;
         private string _zipPassword;
+        private int _cpuHash;
 
         public void AddBackupSource(BackupSourceEntry entry) {
             _backupSources ??= new List<BackupSourceEntry>();
@@ -73,6 +74,14 @@ namespace ZipBackup.Services {
             }
         }
 
+        public int CpuHash {
+            get => _cpuHash;
+            set{
+                _cpuHash = value;
+                OnMutate?.Invoke(null, null);
+            }
+        }
+
         public string FilenamePattern {
             get => _filenamePattern;
             set {
@@ -94,16 +103,13 @@ namespace ZipBackup.Services {
 
         public void SetZipPassword(string password) {
             ZipPassword = EncryptionUtil.EncryptString(password, EncryptionUtil.GetCpuSerial());
+            CpuHash = EncryptionUtil.GetCpuSerial().GetHashCode();
         }
 
         /// <summary>
         /// Password encrypted using the CPU serial
         /// </summary>
         [JsonIgnore]
-        public string ZipPasswordPlaintext {
-            get => EncryptionUtil.DecryptString(_zipPassword, EncryptionUtil.GetCpuSerial());
-        }
-
-
+        public string ZipPasswordPlaintext => EncryptionUtil.DecryptString(_zipPassword, EncryptionUtil.GetCpuSerial());
     }
 }

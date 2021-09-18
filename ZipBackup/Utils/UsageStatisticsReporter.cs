@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using log4net;
 
-namespace ZipBackup.Services {
+namespace ZipBackup.Utils {
     class UsageStatisticsReporter {
         static readonly ILog Logger = LogManager.GetLogger(typeof(UsageStatisticsReporter));
 

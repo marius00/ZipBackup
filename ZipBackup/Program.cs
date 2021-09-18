@@ -23,18 +23,11 @@ namespace ZipBackup {
         /// </summary>
         [STAThread]
         static void Main() {
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            DateTime buildDate = new DateTime(2000, 1, 1)
-                .AddDays(version.Build)
-                .AddSeconds(version.Revision * 2);
-
-
             var appSettings = SettingsReader.Load(GlobalPaths.SettingsFile).AppSettings;
             ExceptionHandler.EnableLogUnhandledOnThread();
             if (string.IsNullOrEmpty(appSettings.UUID)) {
                 appSettings.UUID = Guid.NewGuid().ToString();
             }
-
             
             var bs = new BackupService(appSettings);
 
@@ -47,7 +40,7 @@ namespace ZipBackup {
 
             UsageStatisticsReporter.UrlStats = "https://webstats.evilsoft.net/zipbackup";
             UsageStatisticsReporter.Uuid = appSettings.UUID;
-
+            ToastUtil.Show("ZipBackup disabled", "The CPU serial hash does not match the current setup.", "Please update the ZIP password under misc settings.");
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

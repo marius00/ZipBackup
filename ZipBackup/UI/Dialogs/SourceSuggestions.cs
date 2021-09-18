@@ -56,6 +56,7 @@ namespace ZipBackup.UI.Dialogs {
                 new Suggestion { Path = @"%appdata%\Postman\Partitions", Name = "Postman" },
                 new Suggestion { Path = @"%LocalAppData%\Logitech\Logitech Gaming Software", Name = "Logitech Gaming Software" },
                 new Suggestion { Path = @"%appdata%\Mozilla\Firefox", Name = "Firefox" },
+                new Suggestion { Path = @"%programfiles%\OpenVPN\config", Name = "OpenVPN certs" },
                 ///%programdata%\FlashFXP\5 <-- no idea if it works cross-pc.. check in a VM?
             };
 

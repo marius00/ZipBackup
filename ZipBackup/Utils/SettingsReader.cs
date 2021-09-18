@@ -56,7 +56,7 @@ namespace ZipBackup.Utils {
 
             Logger.Info("Could not find settings JSON, defaulting to no settings.");
             return new SettingsReader(new AppSettings {
-                FilenamePattern = "dddd"
+                FilenamePattern = "dddd",
             }, filename);
         }
     }

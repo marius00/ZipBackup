@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
 
-namespace ZipBackup.Services {
+namespace ZipBackup.Utils {
     class ExceptionHandler {
         static readonly ILog Logger = LogManager.GetLogger(typeof(ExceptionHandler));
 

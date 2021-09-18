@@ -100,11 +100,11 @@ namespace ZipBackup.UI {
         }
 
         private void btnSuggestions_Click(object sender, EventArgs e) {
-            var sourceSuggestioDialog = new SourceSuggestions(_appSettings);
-            if (sourceSuggestioDialog.ShowDialog() == DialogResult.OK) {
+            var sourceSuggestionDialog = new SourceSuggestions(_appSettings);
+            if (sourceSuggestionDialog.ShowDialog() == DialogResult.OK) {
                 _appSettings.AddBackupSource(new BackupSourceEntry {
-                    Name = sourceSuggestioDialog.ChosenSuggestion.Name,
-                    Folder = sourceSuggestioDialog.ChosenSuggestion.Path
+                    Name = sourceSuggestionDialog.ChosenSuggestion.Name,
+                    Folder = sourceSuggestionDialog.ChosenSuggestion.Path
                 });
 
                 UpdateListview();

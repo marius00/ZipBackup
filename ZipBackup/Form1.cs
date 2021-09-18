@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using ZipBackup.Services;
 using ZipBackup.UI;
+using ZipBackup.Utils;
 
 namespace ZipBackup {
     public partial class Form1 : Form {
