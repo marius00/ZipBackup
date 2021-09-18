@@ -42,6 +42,7 @@ namespace ZipBackup.UI {
         }
 
         private void MiscConfig_Load(object sender, EventArgs e) {
+            Dock = DockStyle.Fill;
             tbFilePattern.Text = _appSettings.FilenamePattern;
             tbInterval.KeyPress += tbInterval_KeyPress;
             tbInterval.Text = _appSettings.BackupIntervalHours.ToString();
