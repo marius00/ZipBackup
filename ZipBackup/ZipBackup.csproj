@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="UI\DestinationEntryForm.cs">
+    <Compile Update="UI\Dialogs\DestinationEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

@@ -10,9 +10,12 @@ using ZipBackup.Utils;
 
 namespace ZipBackup {
     static class Program {
+        /// <summary>
+        /// Configure log4net
+        /// </summary>
         static Program() {
-            var retrete = LogManager.GetRepository(Assembly.GetEntryAssembly());
-            XmlConfigurator.Configure(retrete, new FileInfo("Log4net.config"));
+            var loggerRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(loggerRepository, new FileInfo("Log4net.config"));
 
         }
         /// <summary>
@@ -25,9 +28,6 @@ namespace ZipBackup {
                 .AddDays(version.Build)
                 .AddSeconds(version.Revision * 2);
 
-            ILog Logger = LogManager.GetLogger(typeof(Program));
-            Logger.InfoFormat("Running version {0}.{1}.{2}.{3} from {4}", version.Major, version.Minor, version.Build, version.Revision, buildDate.ToString("dd/MM/yyyy"));
-            
 
             var appSettings = SettingsReader.Load(GlobalPaths.SettingsFile).AppSettings;
             ExceptionHandler.EnableLogUnhandledOnThread();
@@ -40,7 +40,7 @@ namespace ZipBackup {
 
             bs.Backup(new BackupSourceEntry {
                 Folder = @"%appdata%\..\local\evilsoft\MIRCopy",
-                InclusionMask = ".resx",
+                //InclusionMask = ".resx",
                 ExclusionMask = ".resx|.designer.cs"
 
             }, @"f:\temp\backup.zip", string.Empty);

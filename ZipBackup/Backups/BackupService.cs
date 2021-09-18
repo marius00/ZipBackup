@@ -13,8 +13,6 @@ using ZipBackup.Utils;
 
 namespace ZipBackup.Backups {
     class BackupService {
-        private readonly string _localAppdata = System.Environment.GetEnvironmentVariable("LocalAppData");
-        private readonly string _userProfile = System.Environment.GetEnvironmentVariable("UserProfile");
         static readonly ILog Logger = LogManager.GetLogger(typeof(BackupService));
         private readonly AppSettings _appSettings;
 
@@ -22,6 +20,9 @@ namespace ZipBackup.Backups {
             _appSettings = appSettings;
         }
 
+        /// <summary>
+        /// Attempts to perform a backup for every single source entry, and store at each destination folder.
+        /// </summary>
         public void Backup() {
             var sources = _appSettings.BackupSources.ToList();
             if (sources.Count == 0)
@@ -57,20 +58,20 @@ namespace ZipBackup.Backups {
             }
         }
 
-        private string Format(string name) {
-            var suffix = "";
-            if (!string.IsNullOrEmpty(_appSettings.FilenamePattern))
-                suffix = DateTime.Now.ToString(_appSettings.FilenamePattern);
-
-            return name.Replace(" ", "_") + suffix + ".zip";
-        }
-
+        /// <summary>
+        /// Performs a backup on a single source/directory
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="outputFilename"></param>
+        /// <param name="plaintextPassword"></param>
         public void Backup(BackupSourceEntry source, string outputFilename, string plaintextPassword) {
-            if (!Directory.Exists(source.Folder)) {
-                Logger.Warn($"The requested directory {source.Folder} does not exist");
+            string folder = EnvPathConverterUtil.FromEnvironmentalPath(source.Folder);
+            if (!Directory.Exists(folder)) {
+                Logger.Warn($"The requested directory {folder} does not exist");
                 // TODO: Log, notify?
                 return;
             }
+
 
             if (File.Exists(outputFilename)) {
                 Logger.Info($"The output filename {outputFilename} already exists, overwriting");
@@ -79,9 +80,9 @@ namespace ZipBackup.Backups {
 
             List<string> files = new List<string>();
             var depth = source.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            foreach (var filename in Directory.GetFiles(source.Folder, "*.*", depth)) {
+            foreach (var filename in Directory.GetFiles(folder, "*.*", depth)) {
                 // We don't really want to run exclusions on the input folder, only it's contents.
-                var cleanFilename = filename.Substring(source.Folder.Length);
+                var cleanFilename = filename.Substring(folder.Length);
                 if (IsIncluded(source, cleanFilename)) {
                     files.Add(filename);
                 }
@@ -89,11 +90,11 @@ namespace ZipBackup.Backups {
 
             if (files.Count == 0) {
                 if (!string.IsNullOrEmpty(source.InclusionMask))
-                    Logger.Info($"Could not find any files in {source.Folder} matching inclusion pattern {source.InclusionMask}");
+                    Logger.Info($"Could not find any files in {folder} matching inclusion pattern {source.InclusionMask}");
                 else if (!string.IsNullOrEmpty(source.ExclusionMask))
-                    Logger.Info($"Could not find any files in {source.Folder} after applying exclusion pattern {source.ExclusionMask}");
+                    Logger.Info($"Could not find any files in {folder} after applying exclusion pattern {source.ExclusionMask}");
                 else
-                    Logger.Info($"Could not find any files in {source.Folder}");
+                    Logger.Info($"Could not find any files in {folder}");
 
                 // TODO: Err
                 return;
@@ -109,7 +110,7 @@ namespace ZipBackup.Backups {
 
                 foreach (var file in files) {
                     try {
-                        zip.AddFile(file, Sanitize(file, source.Folder));
+                        zip.AddFile(file, Sanitize(file, folder));
                     }
                     catch (IOException) {
                         FileInfo fileInfo = new FileInfo(file);
@@ -118,7 +119,7 @@ namespace ZipBackup.Backups {
                             var tempFileName = Path.GetTempFileName();
                             File.Copy(file, tempFileName, true);
                             try {
-                                zip.AddFile(tempFileName, Sanitize(file, source.Folder)); // TODO: Filename becomes folder i think..
+                                zip.AddFile(tempFileName, Sanitize(file, folder)); // TODO: Filename becomes folder i think..
                             }
                             finally {
                                 File.Delete(tempFileName);
@@ -137,6 +138,13 @@ namespace ZipBackup.Backups {
             Logger.Debug($"Successfully zipped {files.Count} files to {outputFilename}");
         }
 
+        /// <summary>
+        /// Checks a given filename against the inclusion and exclusion masks.
+        /// If an inclusion mask is defined, the exclusion mask is ignored.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public bool IsIncluded(BackupSourceEntry source, string filename) {
             if (!string.IsNullOrEmpty(source.InclusionMask)) {
                 return Regex.IsMatch(filename, source.InclusionMask, RegexOptions.IgnoreCase);
@@ -147,11 +155,30 @@ namespace ZipBackup.Backups {
             return true;
         }
 
+        /// <summary>
+        /// Sanitizes the file path stored inside the zip file.
+        /// Attempts to replace appdata with %appdata% and failing all, stores the root folder only.
+        /// This prevents having zip files with paths such as c:\my\folder\is\very\long\with\one\file.txt
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
         private string Sanitize(string filePath, string prefix) {
-            return Path.GetDirectoryName(filePath)
-                .Replace(_localAppdata, "%LocalAppData%")
-                .Replace(_userProfile, "%UserProfile%")
+            return EnvPathConverterUtil.ToEnvironmentalPath(Path.GetDirectoryName(filePath))
                 .Replace(prefix, new DirectoryInfo(prefix).Name);
+        }
+
+        /// <summary>
+        /// Format filename according to date pattern (ignored if empty)
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private string Format(string name) {
+            var suffix = "";
+            if (!string.IsNullOrEmpty(_appSettings.FilenamePattern))
+                suffix = DateTime.Now.ToString(_appSettings.FilenamePattern);
+
+            return name.Replace(" ", "_") + suffix + ".zip";
         }
     }
 }

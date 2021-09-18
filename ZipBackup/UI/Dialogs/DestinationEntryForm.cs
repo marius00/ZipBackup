@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using ZipBackup.Backups;
+using ZipBackup.Utils;
 
 namespace ZipBackup.UI {
     public partial class DestinationEntryForm : Form {
@@ -29,7 +30,7 @@ namespace ZipBackup.UI {
 
 
         private void btnSave_Click(object sender, EventArgs e) {
-            if (string.IsNullOrEmpty(tbPath.Text) || !Directory.Exists(tbPath.Text)) {
+            if (string.IsNullOrEmpty(tbPath.Text) || !Directory.Exists(EnvPathConverterUtil.FromEnvironmentalPath(tbPath.Text))) {
                 errorProvider.SetError(btnBrowsePath, "Directory does not exist");
                 return;
             }
@@ -49,7 +50,7 @@ namespace ZipBackup.UI {
             using (var folderBrowserDialog = new FolderBrowserDialog()) {
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK) {
                     DialogResult = DialogResult.None;
-                    tbPath.Text = folderBrowserDialog.SelectedPath;
+                    tbPath.Text = EnvPathConverterUtil.ToEnvironmentalPath(folderBrowserDialog.SelectedPath);
                 }
             }
         }
