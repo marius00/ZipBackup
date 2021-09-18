@@ -13,14 +13,16 @@ namespace ZipBackup {
         private readonly BackgroundBackupService _backupBackgroundService;
         private readonly BackupService _backupService;
         private readonly NotificationService _notificationService;
+        private MinimizeToTrayHandler _minimizeToTrayHandler;
         private System.Windows.Forms.Timer _toastTimer;
 
         public Form1(AppSettings appSettings, BackupService backupService, NotificationService notificationService) {
+            InitializeComponent();
             _appSettings = appSettings;
             _backupService = backupService;
             _notificationService = notificationService;
             _backupBackgroundService = new BackgroundBackupService(backupService, appSettings);
-            InitializeComponent();
+            _minimizeToTrayHandler = new MinimizeToTrayHandler(this, notifyIcon1);
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -45,19 +47,25 @@ namespace ZipBackup {
 
             // Backup thread
             _backupBackgroundService.Start();
-            this.FormClosing += (_, __) => _backupBackgroundService.Dispose();
 
             // Toast thread (UI thread)
             _toastTimer = new System.Windows.Forms.Timer { Interval = 5000 };
             _toastTimer.Tick += _toastTimer_Tick;
             _toastTimer.Start();
-            this.FormClosing += (_, __) => _toastTimer.Stop();
 
             // Subscribe to errors
             _backupService.OnError += (_, args) => {
                 var eventArgs = args as BackupErrorEventArg;
                 _notificationService.Add(eventArgs.Component, eventArgs.Content);
             };
+
+            this.FormClosing += Form1_FormClosing;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+            _minimizeToTrayHandler?.Dispose();
+            _toastTimer.Stop();
+            _backupBackgroundService.Dispose();
         }
 
         private void _toastTimer_Tick(object sender, EventArgs e) {

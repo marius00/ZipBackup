@@ -26,6 +26,8 @@ namespace ZipBackup.UI {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbErrorThreshold = new System.Windows.Forms.TextBox();
+            this.lbErrorThreshold = new System.Windows.Forms.Label();
             this.tbInterval = new System.Windows.Forms.TextBox();
             this.lbInterval = new System.Windows.Forms.Label();
             this.passwordInput2 = new System.Windows.Forms.MaskedTextBox();
@@ -36,14 +38,14 @@ namespace ZipBackup.UI {
             this.passwordInput1 = new System.Windows.Forms.MaskedTextBox();
             this.tbFilePattern = new System.Windows.Forms.TextBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.lbErrorThreshold = new System.Windows.Forms.Label();
-            this.tbErrorThreshold = new System.Windows.Forms.TextBox();
+            this.cbStartOnSystemBoot = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbStartOnSystemBoot);
             this.groupBox1.Controls.Add(this.tbErrorThreshold);
             this.groupBox1.Controls.Add(this.lbErrorThreshold);
             this.groupBox1.Controls.Add(this.tbInterval);
@@ -62,6 +64,23 @@ namespace ZipBackup.UI {
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Misc configurations";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // tbErrorThreshold
+            // 
+            this.tbErrorThreshold.Location = new System.Drawing.Point(147, 136);
+            this.tbErrorThreshold.Name = "tbErrorThreshold";
+            this.tbErrorThreshold.Size = new System.Drawing.Size(223, 23);
+            this.tbErrorThreshold.TabIndex = 10;
+            this.tbErrorThreshold.TextChanged += new System.EventHandler(this.tbErrorThreshold_TextChanged);
+            // 
+            // lbErrorThreshold
+            // 
+            this.lbErrorThreshold.AutoSize = true;
+            this.lbErrorThreshold.Location = new System.Drawing.Point(6, 139);
+            this.lbErrorThreshold.Name = "lbErrorThreshold";
+            this.lbErrorThreshold.Size = new System.Drawing.Size(108, 15);
+            this.lbErrorThreshold.TabIndex = 9;
+            this.lbErrorThreshold.Text = "Warn after X errors:";
             // 
             // tbInterval
             // 
@@ -148,22 +167,17 @@ namespace ZipBackup.UI {
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // lbErrorThreshold
+            // cbStartOnSystemBoot
             // 
-            this.lbErrorThreshold.AutoSize = true;
-            this.lbErrorThreshold.Location = new System.Drawing.Point(6, 139);
-            this.lbErrorThreshold.Name = "lbErrorThreshold";
-            this.lbErrorThreshold.Size = new System.Drawing.Size(108, 15);
-            this.lbErrorThreshold.TabIndex = 9;
-            this.lbErrorThreshold.Text = "Warn after X errors:";
-            // 
-            // tbErrorThreshold
-            // 
-            this.tbErrorThreshold.Location = new System.Drawing.Point(147, 136);
-            this.tbErrorThreshold.Name = "tbErrorThreshold";
-            this.tbErrorThreshold.Size = new System.Drawing.Size(223, 23);
-            this.tbErrorThreshold.TabIndex = 10;
-            this.tbErrorThreshold.TextChanged += new System.EventHandler(this.tbErrorThreshold_TextChanged);
+            this.cbStartOnSystemBoot.AutoSize = true;
+            this.cbStartOnSystemBoot.Location = new System.Drawing.Point(6, 167);
+            this.cbStartOnSystemBoot.Name = "cbStartOnSystemBoot";
+            this.cbStartOnSystemBoot.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.cbStartOnSystemBoot.Size = new System.Drawing.Size(147, 19);
+            this.cbStartOnSystemBoot.TabIndex = 11;
+            this.cbStartOnSystemBoot.Text = "Start on system startup";
+            this.cbStartOnSystemBoot.UseVisualStyleBackColor = true;
+            this.cbStartOnSystemBoot.CheckedChanged += new System.EventHandler(this.cbStartOnSystemBoot_CheckedChanged);
             // 
             // MiscConfig
             // 
@@ -197,5 +211,6 @@ namespace ZipBackup.UI {
         private System.Windows.Forms.Label lbInterval;
         private System.Windows.Forms.TextBox tbErrorThreshold;
         private System.Windows.Forms.Label lbErrorThreshold;
+        private System.Windows.Forms.CheckBox cbStartOnSystemBoot;
     }
 }

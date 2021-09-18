@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
 using ZipBackup.Services;
+using ZipBackup.Utils;
 
 namespace ZipBackup.UI {
     public partial class MiscConfig : Form {
@@ -47,6 +48,7 @@ namespace ZipBackup.UI {
 
             tbErrorThreshold.KeyPress += tbInterval_KeyPress;
             tbErrorThreshold.Text = _appSettings.ErrorThreshold.ToString();
+            cbStartOnSystemBoot.Checked = StartupRegistrationService.IsInstalled();
         }
 
 
@@ -81,6 +83,16 @@ namespace ZipBackup.UI {
                 Logger.Info($"Updated error threshold to {value} errors");
             }
 
+        }
+
+        private void cbStartOnSystemBoot_CheckedChanged(object sender, EventArgs e) {
+            if (sender is CheckBox cb) {
+                if (cb.Checked) {
+                    StartupRegistrationService.Install();
+                } else {
+                    StartupRegistrationService.Uninstall();
+                }
+            }
         }
     }
 }
