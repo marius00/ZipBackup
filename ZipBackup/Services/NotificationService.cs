@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ZipBackup.Services {
     public class NotificationService {
-        // TODO: Concurrent collections
+        private DateTime _lastCacheClearDate = DateTime.Now;
         private readonly ConcurrentDictionary<string, bool> _cache = new();
         private readonly ConcurrentBag<string> _notifications = new();
 
@@ -31,8 +31,15 @@ namespace ZipBackup.Services {
 
         public void Clear() {
             _notifications.Clear();
+
+            // Not using UTC as we care about time, and don't want to spam notifications at midnight.
+            if (_lastCacheClearDate.Date != DateTime.Now.Date) {
+                if (DateTime.Now.Hour > 9) {
+                    _lastCacheClearDate = DateTime.Now;
+                    _cache.Clear();
+                }
+            }
         }
 
-        // TODO: Clear cache daily
     }
 }
