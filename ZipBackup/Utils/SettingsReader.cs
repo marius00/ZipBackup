@@ -15,10 +15,10 @@ namespace ZipBackup.Utils {
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        private readonly SettingsService _data;
+        private readonly AppSettings _data;
         private readonly string _persistentStorage;
 
-        public SettingsReader(SettingsService data, string persistentStorage) {
+        public SettingsReader(AppSettings data, string persistentStorage) {
             _persistentStorage = persistentStorage;
             _data = data;
 
@@ -35,13 +35,13 @@ namespace ZipBackup.Utils {
             }
         }
 
-        public SettingsService Settings => _data;
+        public AppSettings AppSettings => _data;
 
         public static SettingsReader Load(string filename) {
             if (File.Exists(filename)) {
                 try {
                     string json = File.ReadAllText(filename);
-                    var template = JsonConvert.DeserializeObject<SettingsService>(json, JsonSerializerSettings);
+                    var template = JsonConvert.DeserializeObject<AppSettings>(json, JsonSerializerSettings);
                     if (template != null) {
                         return new SettingsReader(template, filename);
                     }
@@ -55,7 +55,7 @@ namespace ZipBackup.Utils {
             }
 
             Logger.Info("Could not find settings JSON, defaulting to no settings.");
-            return new SettingsReader(new SettingsService {
+            return new SettingsReader(new AppSettings {
                 FilenamePattern = "dddd"
             }, filename);
         }

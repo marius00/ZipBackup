@@ -8,7 +8,7 @@ using ZipBackup.Backups;
 using ZipBackup.Utils;
 
 namespace ZipBackup.Services {
-    public class SettingsService {
+    public class AppSettings {
         public event EventHandler OnMutate;
         private List<BackupSourceEntry> _backupSources;
         private List<BackupDestinationEntry> _backupDestinations;
@@ -26,8 +26,23 @@ namespace ZipBackup.Services {
             OnMutate?.Invoke(null, null);
         }
 
+        public void AddBackupDestination(BackupDestinationEntry entry) {
+            _backupDestinations ??= new List<BackupDestinationEntry>();
+
+            if (!_backupDestinations.Contains(entry)) {
+                _backupDestinations.Add(entry);
+            }
+
+            OnMutate?.Invoke(null, null);
+        }
+
         public void RemoveBackupSource(BackupSourceEntry entry) {
             _backupSources?.RemoveAll(src => src.Folder.Equals(entry.Folder, StringComparison.CurrentCultureIgnoreCase));
+            OnMutate?.Invoke(null, null);
+        }
+
+        public void RemoveBackupDestination(BackupDestinationEntry entry) {
+            _backupDestinations?.RemoveAll(src => src.Folder.Equals(entry.Folder, StringComparison.CurrentCultureIgnoreCase));
             OnMutate?.Invoke(null, null);
         }
 

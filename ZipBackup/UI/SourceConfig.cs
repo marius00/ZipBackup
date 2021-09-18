@@ -12,10 +12,10 @@ using ZipBackup.Services;
 
 namespace ZipBackup.UI {
     public partial class SourceConfig : Form {
-        private readonly SettingsService _settingsService;
+        private readonly AppSettings _appSettings;
 
-        public SourceConfig(SettingsService settingsService) {
-            _settingsService = settingsService;
+        public SourceConfig(AppSettings appSettings) {
+            _appSettings = appSettings;
             InitializeComponent();
             TopLevel = false;
         }
@@ -38,7 +38,7 @@ namespace ZipBackup.UI {
             listView1.BeginUpdate();
             listView1.Items.Clear();
 
-            var sources = _settingsService.BackupSources ?? new List<BackupSourceEntry>();
+            var sources = _appSettings.BackupSources ?? new List<BackupSourceEntry>();
             foreach (var source in sources.ToList()) {
                 listView1.Items.Add(ToListViewItem(source));
             }
@@ -63,10 +63,9 @@ namespace ZipBackup.UI {
         private void btnAdd_Click(object sender, EventArgs e) {
             var srcEntryForm = new SourceEntryForm();
             if (srcEntryForm.ShowDialog() == DialogResult.OK) {
-                _settingsService.AddBackupSource(srcEntryForm.Entry);
+                _appSettings.AddBackupSource(srcEntryForm.Entry);
                 UpdateListview();
             }
-
         }
 
         private void btnEdit_Click(object sender, EventArgs e) {
@@ -77,8 +76,8 @@ namespace ZipBackup.UI {
                     var entry = (BackupSourceEntry) lvi.Tag;
                     var srcEntryForm = new SourceEntryForm(entry);
                     if (srcEntryForm.ShowDialog() == DialogResult.OK) {
-                        _settingsService.RemoveBackupSource(entry);
-                        _settingsService.AddBackupSource(srcEntryForm.Entry);
+                        _appSettings.RemoveBackupSource(entry);
+                        _appSettings.AddBackupSource(srcEntryForm.Entry);
                         UpdateListview();
                     }
                 }
@@ -92,7 +91,7 @@ namespace ZipBackup.UI {
                 foreach (ListViewItem lvi in listView1.SelectedItems) {
                     if (MessageBox.Show("Are you sure you wish to delete this entry?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
                         var entry = (BackupSourceEntry)lvi.Tag;
-                        _settingsService.RemoveBackupSource(entry);
+                        _appSettings.RemoveBackupSource(entry);
                         UpdateListview();
                     }
                 }

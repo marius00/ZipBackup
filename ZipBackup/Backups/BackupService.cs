@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -15,18 +16,18 @@ namespace ZipBackup.Backups {
         private readonly string _localAppdata = System.Environment.GetEnvironmentVariable("LocalAppData");
         private readonly string _userProfile = System.Environment.GetEnvironmentVariable("UserProfile");
         static readonly ILog Logger = LogManager.GetLogger(typeof(BackupService));
-        private readonly SettingsService _settingsService;
+        private readonly AppSettings _appSettings;
 
-        public BackupService(SettingsService settingsService) {
-            _settingsService = settingsService;
+        public BackupService(AppSettings appSettings) {
+            _appSettings = appSettings;
         }
 
         public void Backup() {
-            var sources = _settingsService.BackupSources.ToList();
+            var sources = _appSettings.BackupSources.ToList();
             if (sources.Count == 0)
                 return;
 
-            var destinations = _settingsService.BackupDestinations.ToList();
+            var destinations = _appSettings.BackupDestinations.ToList();
             if (destinations.Count == 0) {
                 // TODO: Error?
                 Logger.Warn($"Attempting to perform backup of {sources.Count} sources, but no destinations are configured. Aborting.");
@@ -44,7 +45,8 @@ namespace ZipBackup.Backups {
             foreach (var source in sources) {
                 var tempFileName = Path.GetTempFileName();
                 try {
-                    Backup(source, tempFileName);
+                    var plaintextPassword = _appSettings.ZipPasswordPlaintext; // CPU heavy to read
+                    Backup(source, tempFileName, plaintextPassword);
                     foreach (var dest in destinations) {
                         File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true); // TODO: IOException
                     }
@@ -57,13 +59,13 @@ namespace ZipBackup.Backups {
 
         private string Format(string name) {
             var suffix = "";
-            if (!string.IsNullOrEmpty(_settingsService.FilenamePattern))
-                suffix = DateTime.Now.ToString(_settingsService.FilenamePattern);
+            if (!string.IsNullOrEmpty(_appSettings.FilenamePattern))
+                suffix = DateTime.Now.ToString(_appSettings.FilenamePattern);
 
             return name.Replace(" ", "_") + suffix + ".zip";
         }
 
-        public void Backup(BackupSourceEntry source, string outputFilename) {
+        public void Backup(BackupSourceEntry source, string outputFilename, string plaintextPassword) {
             if (!Directory.Exists(source.Folder)) {
                 Logger.Warn($"The requested directory {source.Folder} does not exist");
                 // TODO: Log, notify?
@@ -97,8 +99,9 @@ namespace ZipBackup.Backups {
                 return;
             }
 
+  
+
             using (ZipFile zip = new ZipFile()) {
-                var plaintextPassword = _settingsService.ZipPasswordPlaintext; // CPU heavy to read
                 if (!string.IsNullOrEmpty(plaintextPassword)) {
                     zip.Password = plaintextPassword; ;
                     zip.Encryption = EncryptionAlgorithm.WinZipAes256;
@@ -106,7 +109,7 @@ namespace ZipBackup.Backups {
 
                 foreach (var file in files) {
                     try {
-                        zip.AddFile(file, Sanitize(file, source.Folder)); // TODO: Filename becomes folder i think..
+                        zip.AddFile(file, Sanitize(file, source.Folder));
                     }
                     catch (IOException) {
                         FileInfo fileInfo = new FileInfo(file);

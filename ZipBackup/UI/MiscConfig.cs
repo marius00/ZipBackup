@@ -11,9 +11,9 @@ using ZipBackup.Services;
 
 namespace ZipBackup.UI {
     public partial class MiscConfig : Form {
-        private readonly SettingsService _settingsService;
-        public MiscConfig(SettingsService settingsService) {
-            _settingsService = settingsService;
+        private readonly AppSettings _appSettings;
+        public MiscConfig(AppSettings appSettings) {
+            _appSettings = appSettings;
             InitializeComponent();
             TopLevel = false;
         }
@@ -22,7 +22,7 @@ namespace ZipBackup.UI {
             var result = "";
             try {
                 result = DateTime.Now.ToString(tbFilePattern.Text);
-                _settingsService.FilenamePattern = tbFilePattern.Text;
+                _appSettings.FilenamePattern = tbFilePattern.Text;
             }
             catch (Exception ex) {
                 result = "Error: " + ex.Message;
@@ -38,12 +38,12 @@ namespace ZipBackup.UI {
         }
 
         private void MiscConfig_Load(object sender, EventArgs e) {
-            tbFilePattern.Text = _settingsService.FilenamePattern;
+            tbFilePattern.Text = _appSettings.FilenamePattern;
         }
 
 
         private void btnSavePassword_Click(object sender, EventArgs e) {
-            _settingsService.SetZipPassword(maskedTextBox1.Text);
+            _appSettings.SetZipPassword(maskedTextBox1.Text);
         }
     }
 }

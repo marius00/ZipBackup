@@ -13,28 +13,29 @@ namespace ZipBackup {
         /// </summary>
         [STAThread]
         static void Main() {
-            var settingsService = SettingsReader.Load(GlobalPaths.SettingsFile).Settings;
+            var appSettings = SettingsReader.Load(GlobalPaths.SettingsFile).AppSettings;
             ExceptionHandler.EnableLogUnhandledOnThread();
-            if (string.IsNullOrEmpty(settingsService.UUID)) {
-                settingsService.UUID = Guid.NewGuid().ToString();
+            if (string.IsNullOrEmpty(appSettings.UUID)) {
+                appSettings.UUID = Guid.NewGuid().ToString();
             }
 
-            var bs = new BackupService(settingsService);
+            /*
+            var bs = new BackupService(appSettings);
 
             bs.Backup(new BackupSourceEntry {
                 Folder = @"F:\Dev\IAGrim\IAGrim\UI",
                 InclusionMask = ".resx",
                 ExclusionMask = ".resx|.designer.cs"
 
-            }, @"f:\temp\backup.zip");
+            }, @"f:\temp\backup.zip");*/
 
             UsageStatisticsReporter.UrlStats = "https://webstats.evilsoft.net/zipbackup";
-            UsageStatisticsReporter.Uuid = settingsService.UUID;
+            UsageStatisticsReporter.Uuid = appSettings.UUID;
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(settingsService));
+            Application.Run(new Form1(appSettings));
         }
     }
 }
