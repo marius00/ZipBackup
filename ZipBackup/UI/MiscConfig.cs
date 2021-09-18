@@ -44,6 +44,9 @@ namespace ZipBackup.UI {
             tbFilePattern.Text = _appSettings.FilenamePattern;
             tbInterval.KeyPress += tbInterval_KeyPress;
             tbInterval.Text = _appSettings.BackupIntervalHours.ToString();
+
+            tbErrorThreshold.KeyPress += tbInterval_KeyPress;
+            tbErrorThreshold.Text = _appSettings.ErrorThreshold.ToString();
         }
 
 
@@ -69,6 +72,15 @@ namespace ZipBackup.UI {
                 _appSettings.BackupIntervalHours = value;
                 Logger.Info($"Updated backup interval to {value} hours");
             }
+        }
+
+        private void tbErrorThreshold_TextChanged(object sender, EventArgs e) {
+            var value = int.TryParse(tbErrorThreshold.Text, out var val) ? val : 0;
+            if (value is > 0 and < 1000) {
+                _appSettings.ErrorThreshold = value;
+                Logger.Info($"Updated error threshold to {value} errors");
+            }
+
         }
     }
 }

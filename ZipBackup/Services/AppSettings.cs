@@ -17,6 +17,7 @@ namespace ZipBackup.Services {
         private string _zipPassword;
         private int _cpuHash;
         private int _backupIntervalHours;
+        private int _errorThreshold;
 
         public void AddBackupSource(BackupSourceEntry entry) {
             _backupSources ??= new List<BackupSourceEntry>();
@@ -80,9 +81,17 @@ namespace ZipBackup.Services {
         }
 
         public int BackupIntervalHours {
-            get => _backupIntervalHours;
-            set{
+            get => Math.Max(1, _backupIntervalHours);
+            set {
                 _backupIntervalHours = value;
+                OnMutate?.Invoke(null, null);
+            }
+        }
+
+        public int ErrorThreshold {
+            get => Math.Max(1, _errorThreshold);
+            set {
+                _errorThreshold = value;
                 OnMutate?.Invoke(null, null);
             }
         }

@@ -20,11 +20,6 @@ namespace ZipBackup.UI {
             InitializeComponent();
             TopLevel = false;
         }
-
-        private void button1_Click(object sender, EventArgs e) {
-            //ToastUtil.Show();
-        }
-
         private void DestinationConfig_Load(object sender, EventArgs e) {
             Dock = DockStyle.Fill;
             UpdateListview();

@@ -12,11 +12,13 @@ namespace ZipBackup {
         private readonly AppSettings _appSettings;
         private readonly BackgroundBackupService _backupBackgroundService;
         private readonly BackupService _backupService;
+        private readonly NotificationService _notificationService;
         private System.Windows.Forms.Timer _toastTimer;
 
-        public Form1(AppSettings appSettings, BackupService backupService) {
+        public Form1(AppSettings appSettings, BackupService backupService, NotificationService notificationService) {
             _appSettings = appSettings;
             _backupService = backupService;
+            _notificationService = notificationService;
             _backupBackgroundService = new BackgroundBackupService(backupService, appSettings);
             InitializeComponent();
         }
@@ -50,15 +52,22 @@ namespace ZipBackup {
             _toastTimer.Tick += _toastTimer_Tick;
             _toastTimer.Start();
             this.FormClosing += (_, __) => _toastTimer.Stop();
+
+            // Subscribe to errors
+            _backupService.OnError += (_, args) => {
+                var eventArgs = args as BackupErrorEventArg;
+                _notificationService.Add(eventArgs.Component, eventArgs.Content);
+            };
         }
 
         private void _toastTimer_Tick(object sender, EventArgs e) {
-            var error = _backupService.Errors.FirstOrDefault();
-            if (!string.IsNullOrEmpty(error)) {
-                _backupService.Errors.Remove(error);
-                var content = error.Split("\n");
+            foreach (var notification in _notificationService.GetNotifications()) {
+                var content = notification.Split("\n");
                 ToastUtil.Show(content);
             }
+
+            _notificationService.Clear();
+            
         }
     }
 }

@@ -58,7 +58,8 @@ namespace ZipBackup.Utils {
             Logger.Info("Could not find settings JSON, defaulting to no settings.");
             return new SettingsReader(new AppSettings {
                 FilenamePattern = "dddd",
-                BackupIntervalHours = 16
+                BackupIntervalHours = 16,
+                ErrorThreshold = 5
             }, filename);
         }
     }

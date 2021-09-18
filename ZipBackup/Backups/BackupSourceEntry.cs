@@ -15,7 +15,7 @@ namespace ZipBackup.Backups {
 
         public bool Recursive { get; set; } = true;
 
-        public long LastUpdate { get; set; }
+        public long NextUpdate { get; set; }
 
         /// <summary>
         /// Patterns to exclude. Regex.

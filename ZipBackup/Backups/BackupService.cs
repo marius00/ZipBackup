@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.DirectoryServices;
 using System.IO;
 using System.Linq;
-using System.Security;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Windows.UI.Input;
 using Ionic.Zip;
 using log4net;
 using ZipBackup.Services;
@@ -17,7 +14,7 @@ namespace ZipBackup.Backups {
     public class BackupService {
         static readonly ILog Logger = LogManager.GetLogger(typeof(BackupService));
         private readonly AppSettings _appSettings;
-        public ISet<string> Errors { get; private set; } = new HashSet<string>();
+        public event EventHandler OnError;
 
         public BackupService(AppSettings appSettings) {
             _appSettings = appSettings;
@@ -43,7 +40,8 @@ namespace ZipBackup.Backups {
                     Folder = GlobalPaths.CoreFolder,
                     Name = "ZipBackup",
                     InclusionMask = ".json",
-                    Recursive = false
+                    Recursive = false,
+                    ExclusionMask = ""
                 });
 
                 sources = _appSettings.BackupSources.ToList();
@@ -56,7 +54,11 @@ namespace ZipBackup.Backups {
                 Logger.Error("The CPU serial does not match the expected value. The zip encryption password must be reset before continuing");
                 Logger.Error($"Got {_appSettings.CpuHash} expected {EncryptionUtil.GetDeterministicHashCode(EncryptionUtil.GetCpuSerial())}");
                 // TODO: This could trigger an action which redirects to password config
-                Errors.Add("ZipBackup disabled\nThe CPU serial hash does not match the current setup.\nPlease update the ZIP password under misc settings.");
+                OnError?.Invoke(this, new BackupErrorEventArg {
+                    Component = "Core",
+                    Content = "ZipBackup disabled\nThe CPU serial hash does not match the current setup.\nPlease update the ZIP password under misc settings."
+                });
+
                 return;
             }
 
@@ -65,14 +67,26 @@ namespace ZipBackup.Backups {
                 if (CanBackup(source)) {
                     var tempFileName = Path.GetTempFileName();
                     try {
-                        Backup(source, tempFileName, plaintextPassword);
-                        foreach (var dest in destinations) {
-                            File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true); // TODO: IOException
+                        if (Backup(source, tempFileName, plaintextPassword)) {
+                            foreach (var dest in destinations) {
+                                File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true); // TODO: IOException
+                            }
+
+                            // Success: No more errors.
+                            source.Errors.Clear();
+                            source.NextUpdate = DateTime.UtcNow.AddHours(_appSettings.BackupIntervalHours).ToTimestamp();
+                        }
+                        else {
+                            // Retry in 45 minutes
+                            source.NextUpdate = DateTime.UtcNow.AddMinutes(45).ToTimestamp();
+                            if (source.Errors.Count >= _appSettings.ErrorThreshold) {
+                                OnError?.Invoke(this, new BackupErrorEventArg {
+                                    Component = source.Name,
+                                    Content = $"Error backing up {source.Name}\n{string.Join("\n", source.Errors)}"
+                                });
+                            }
                         }
 
-                        // Success: No more errors.
-                        source.Errors.Clear();
-                        source.LastUpdate = DateTime.UtcNow.ToTimestamp();
                     }
                     finally {
                         File.Delete(tempFileName);
@@ -89,9 +103,8 @@ namespace ZipBackup.Backups {
         /// <param name="entry"></param>
         /// <returns></returns>
         private bool CanBackup(BackupSourceEntry entry) {
-            var hours = Math.Max(1, _appSettings.BackupIntervalHours);
-            var lastUpdate = DateTimeEpochExtension.FromTimestamp(entry.LastUpdate).AddHours(hours);
-            return DateTime.UtcNow > lastUpdate;
+            var nextUpdateTime = DateTimeEpochExtension.FromTimestamp(entry.NextUpdate);
+            return DateTime.UtcNow > nextUpdateTime;
         }
 
         /// <summary>
@@ -100,12 +113,12 @@ namespace ZipBackup.Backups {
         /// <param name="source"></param>
         /// <param name="outputFilename"></param>
         /// <param name="plaintextPassword"></param>
-        public void Backup(BackupSourceEntry source, string outputFilename, string plaintextPassword) {
+        public bool Backup(BackupSourceEntry source, string outputFilename, string plaintextPassword) {
             string folder = EnvPathConverterUtil.FromEnvironmentalPath(source.Folder);
             if (!Directory.Exists(folder)) {
                 Logger.Warn($"The requested directory {folder} does not exist");
                 // TODO: Log, notify? -- add to an error queue? Prevents duplicates and can be shown afterwards
-                return;
+                return false;
             }
 
 
@@ -136,7 +149,7 @@ namespace ZipBackup.Backups {
                 }
 
                 source.Errors.Add($"No files found\nCould not find any files to backup for {source.Name}.");
-                return;
+                return false;
             }
 
   
@@ -175,6 +188,7 @@ namespace ZipBackup.Backups {
             }
 
             Logger.Debug($"Successfully zipped {files.Count} files to {outputFilename}");
+            return true;
         }
 
         /// <summary>
