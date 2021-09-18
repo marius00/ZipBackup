@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using ZipBackup.Backups;
 using ZipBackup.Services;
 using ZipBackup.UI;
 using ZipBackup.Utils;
@@ -8,8 +10,14 @@ using ZipBackup.Utils;
 namespace ZipBackup {
     public partial class Form1 : Form {
         private readonly AppSettings _appSettings;
-        public Form1(AppSettings appSettings) {
+        private readonly BackgroundBackupService _backupBackgroundService;
+        private readonly BackupService _backupService;
+        private System.Windows.Forms.Timer _toastTimer;
+
+        public Form1(AppSettings appSettings, BackupService backupService) {
             _appSettings = appSettings;
+            _backupService = backupService;
+            _backupBackgroundService = new BackgroundBackupService(backupService, appSettings);
             InitializeComponent();
         }
 
@@ -32,6 +40,25 @@ namespace ZipBackup {
 #if !DEBUG
             ThreadPool.QueueUserWorkItem(m => UsageStatisticsReporter.ReportUsage());
 #endif
+
+            // Backup thread
+            _backupBackgroundService.Start();
+            this.FormClosing += (_, __) => _backupBackgroundService.Dispose();
+
+            // Toast thread (UI thread)
+            _toastTimer = new System.Windows.Forms.Timer { Interval = 5000 };
+            _toastTimer.Tick += _toastTimer_Tick;
+            _toastTimer.Start();
+            this.FormClosing += (_, __) => _toastTimer.Stop();
+        }
+
+        private void _toastTimer_Tick(object sender, EventArgs e) {
+            var error = _backupService.Errors.FirstOrDefault();
+            if (!string.IsNullOrEmpty(error)) {
+                _backupService.Errors.Remove(error);
+                var content = error.Split("\n");
+                ToastUtil.Show(content);
+            }
         }
     }
 }

@@ -12,7 +12,8 @@ namespace ZipBackup.Utils {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             Culture = System.Globalization.CultureInfo.InvariantCulture,
             ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented
         };
 
         private readonly AppSettings _data;
@@ -57,6 +58,7 @@ namespace ZipBackup.Utils {
             Logger.Info("Could not find settings JSON, defaulting to no settings.");
             return new SettingsReader(new AppSettings {
                 FilenamePattern = "dddd",
+                BackupIntervalHours = 16
             }, filename);
         }
     }

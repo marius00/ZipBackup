@@ -4,9 +4,8 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ZipBackup.Utils {
     static class ToastUtil {
-        public static void Show(string title, params string[] content) {
-            var builder = new ToastContentBuilder()
-                .AddText(title);
+        public static void Show(params string[] content) {
+            var builder = new ToastContentBuilder();
 
             foreach (var body in content) {
                 builder.AddText(body);

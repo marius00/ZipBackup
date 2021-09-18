@@ -34,12 +34,16 @@ namespace ZipBackup.UI {
             this.passwordInput1 = new System.Windows.Forms.MaskedTextBox();
             this.tbFilePattern = new System.Windows.Forms.TextBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.lbInterval = new System.Windows.Forms.Label();
+            this.tbInterval = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.tbInterval);
+            this.groupBox1.Controls.Add(this.lbInterval);
             this.groupBox1.Controls.Add(this.passwordInput2);
             this.groupBox1.Controls.Add(this.btnSavePassword);
             this.groupBox1.Controls.Add(this.lbPatternPreview);
@@ -57,7 +61,7 @@ namespace ZipBackup.UI {
             // 
             // passwordInput2
             // 
-            this.passwordInput2.Location = new System.Drawing.Point(111, 78);
+            this.passwordInput2.Location = new System.Drawing.Point(147, 78);
             this.passwordInput2.Name = "passwordInput2";
             this.passwordInput2.Size = new System.Drawing.Size(223, 23);
             this.passwordInput2.TabIndex = 5;
@@ -66,7 +70,7 @@ namespace ZipBackup.UI {
             // 
             // btnSavePassword
             // 
-            this.btnSavePassword.Location = new System.Drawing.Point(337, 77);
+            this.btnSavePassword.Location = new System.Drawing.Point(373, 77);
             this.btnSavePassword.Name = "btnSavePassword";
             this.btnSavePassword.Size = new System.Drawing.Size(84, 23);
             this.btnSavePassword.TabIndex = 6;
@@ -77,7 +81,7 @@ namespace ZipBackup.UI {
             // lbPatternPreview
             // 
             this.lbPatternPreview.AutoSize = true;
-            this.lbPatternPreview.Location = new System.Drawing.Point(337, 23);
+            this.lbPatternPreview.Location = new System.Drawing.Point(373, 23);
             this.lbPatternPreview.Name = "lbPatternPreview";
             this.lbPatternPreview.Size = new System.Drawing.Size(84, 15);
             this.lbPatternPreview.TabIndex = 2;
@@ -103,7 +107,7 @@ namespace ZipBackup.UI {
             // 
             // passwordInput1
             // 
-            this.passwordInput1.Location = new System.Drawing.Point(111, 49);
+            this.passwordInput1.Location = new System.Drawing.Point(147, 49);
             this.passwordInput1.Name = "passwordInput1";
             this.passwordInput1.Size = new System.Drawing.Size(223, 23);
             this.passwordInput1.TabIndex = 4;
@@ -113,7 +117,7 @@ namespace ZipBackup.UI {
             // 
             // tbFilePattern
             // 
-            this.tbFilePattern.Location = new System.Drawing.Point(111, 20);
+            this.tbFilePattern.Location = new System.Drawing.Point(147, 20);
             this.tbFilePattern.Name = "tbFilePattern";
             this.tbFilePattern.Size = new System.Drawing.Size(223, 23);
             this.tbFilePattern.TabIndex = 1;
@@ -122,6 +126,23 @@ namespace ZipBackup.UI {
             // errorProvider1
             // 
             this.errorProvider1.ContainerControl = this;
+            // 
+            // lbInterval
+            // 
+            this.lbInterval.AutoSize = true;
+            this.lbInterval.Location = new System.Drawing.Point(6, 110);
+            this.lbInterval.Name = "lbInterval";
+            this.lbInterval.Size = new System.Drawing.Size(129, 15);
+            this.lbInterval.TabIndex = 7;
+            this.lbInterval.Text = "Backup interval (hours)";
+            // 
+            // tbInterval
+            // 
+            this.tbInterval.Location = new System.Drawing.Point(147, 107);
+            this.tbInterval.Name = "tbInterval";
+            this.tbInterval.Size = new System.Drawing.Size(223, 23);
+            this.tbInterval.TabIndex = 8;
+            this.tbInterval.TextChanged += new System.EventHandler(this.tbInterval_TextChanged);
             // 
             // MiscConfig
             // 
@@ -151,5 +172,7 @@ namespace ZipBackup.UI {
         private System.Windows.Forms.Button btnSavePassword;
         private System.Windows.Forms.MaskedTextBox passwordInput2;
         private System.Windows.Forms.ErrorProvider errorProvider1;
+        private System.Windows.Forms.TextBox tbInterval;
+        private System.Windows.Forms.Label lbInterval;
     }
 }

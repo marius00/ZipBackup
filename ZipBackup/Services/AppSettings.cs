@@ -16,6 +16,7 @@ namespace ZipBackup.Services {
         private string _uuid;
         private string _zipPassword;
         private int _cpuHash;
+        private int _backupIntervalHours;
 
         public void AddBackupSource(BackupSourceEntry entry) {
             _backupSources ??= new List<BackupSourceEntry>();
@@ -24,6 +25,10 @@ namespace ZipBackup.Services {
                 _backupSources.Add(entry);
             }
 
+            OnMutate?.Invoke(null, null);
+        }
+
+        public void BackupSourcesHasMutated() {
             OnMutate?.Invoke(null, null);
         }
 
@@ -50,7 +55,7 @@ namespace ZipBackup.Services {
 
         public List<BackupSourceEntry> BackupSources {
             get => _backupSources;
-            set {
+            set{
                 _backupSources = value;
                 OnMutate?.Invoke(null, null);
             }
@@ -59,7 +64,7 @@ namespace ZipBackup.Services {
 
         public List<BackupDestinationEntry> BackupDestinations {
             get => _backupDestinations;
-            set {
+            set{
                 _backupDestinations = value;
                 OnMutate?.Invoke(null, null);
             }
@@ -68,8 +73,16 @@ namespace ZipBackup.Services {
         // TODO: "field = value" as of C# 10, .NET 6 Preview 7 and up
         public string UUID {
             get => _uuid;
-            set {
+            set{
                 _uuid = value;
+                OnMutate?.Invoke(null, null);
+            }
+        }
+
+        public int BackupIntervalHours {
+            get => _backupIntervalHours;
+            set{
+                _backupIntervalHours = value;
                 OnMutate?.Invoke(null, null);
             }
         }
@@ -84,7 +97,7 @@ namespace ZipBackup.Services {
 
         public string FilenamePattern {
             get => _filenamePattern;
-            set {
+            set{
                 _filenamePattern = value;
                 OnMutate?.Invoke(null, null);
             }
@@ -95,7 +108,7 @@ namespace ZipBackup.Services {
         /// </summary>
         public string ZipPassword {
             get => _zipPassword;
-            set {
+            set{
                 _zipPassword = value;
                 OnMutate?.Invoke(null, null);
             }
@@ -103,7 +116,7 @@ namespace ZipBackup.Services {
 
         public void SetZipPassword(string password) {
             ZipPassword = EncryptionUtil.EncryptString(password, EncryptionUtil.GetCpuSerial());
-            CpuHash = EncryptionUtil.GetCpuSerial().GetHashCode();
+            CpuHash = EncryptionUtil.GetDeterministicHashCode(EncryptionUtil.GetCpuSerial());
         }
 
         /// <summary>

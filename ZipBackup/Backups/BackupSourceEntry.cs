@@ -11,7 +11,11 @@ namespace ZipBackup.Backups {
         public string Name { get; set; }
         public string Folder { get; set; }
 
+        public List<string> Errors { get; set; } = new List<string>();
+
         public bool Recursive { get; set; } = true;
+
+        public long LastUpdate { get; set; }
 
         /// <summary>
         /// Patterns to exclude. Regex.
@@ -28,7 +32,7 @@ namespace ZipBackup.Backups {
 
         public int CompareTo(object? obj) {
             if (obj is BackupSourceEntry entry) {
-                return String.Compare(Folder, entry.Folder, StringComparison.InvariantCultureIgnoreCase);
+                return string.Compare(Folder, entry.Folder, StringComparison.InvariantCultureIgnoreCase);
             }
 
             return 0;
