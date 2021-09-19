@@ -40,6 +40,12 @@ namespace ZipBackup.UI {
             tbExclusionFilter.KeyPress += ExclusionFilter_KeyPress;
             tbName.KeyPress += TbName_KeyPress;
             cbCompression.SelectedIndex = (int)Entry.Compression;
+            tbPath.OnPaste += TbPath_OnPaste;
+        }
+
+        private void TbPath_OnPaste(object sender, EventArgs e) {
+            var arg = (TextBoxWithPaste.PasteEventArg) e;
+            tbPath.Text = EnvPathConverterUtil.ToEnvironmentalPath(arg.Clipboard);
         }
 
         private void TbName_KeyPress(object sender, KeyPressEventArgs e) {

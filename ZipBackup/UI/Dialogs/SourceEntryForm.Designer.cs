@@ -29,7 +29,7 @@ namespace ZipBackup.UI {
             this.tbName = new System.Windows.Forms.TextBox();
             this.tbExclusionFilter = new System.Windows.Forms.TextBox();
             this.tbInclusionFilter = new System.Windows.Forms.TextBox();
-            this.tbPath = new System.Windows.Forms.TextBox();
+            this.tbPath = new ZipBackup.UI.TextBoxWithPaste();
             this.lbInclusionFilter = new System.Windows.Forms.Label();
             this.lbExclusionFilter = new System.Windows.Forms.Label();
             this.lbName = new System.Windows.Forms.Label();
@@ -240,7 +240,7 @@ namespace ZipBackup.UI {
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.TextBox tbExclusionFilter;
         private System.Windows.Forms.TextBox tbInclusionFilter;
-        private System.Windows.Forms.TextBox tbPath;
+        private ZipBackup.UI.TextBoxWithPaste tbPath;
         private System.Windows.Forms.Label lbInclusionFilter;
         private System.Windows.Forms.Label lbExclusionFilter;
         private System.Windows.Forms.Label lbName;
