@@ -50,8 +50,16 @@ namespace ZipBackup.UI {
             tbErrorThreshold.KeyPress += tbInterval_KeyPress;
             tbErrorThreshold.Text = _appSettings.ErrorThreshold.ToString();
             cbStartOnSystemBoot.Checked = StartupRegistrationService.IsInstalled("ZipBackup");
+
+            passwordInput1.Enter += PasswordInput_GotFocus;
+            passwordInput2.Enter += PasswordInput_GotFocus;
         }
 
+        private void PasswordInput_GotFocus(object sender, EventArgs e) {
+            if (sender is MaskedTextBox tb) {
+                tb.BeginInvoke(new Action(tb.SelectAll));
+            }
+        }
 
         private void btnSavePassword_Click(object sender, EventArgs e) {
             if (passwordInput1.Text != passwordInput2.Text) {
