@@ -26,6 +26,7 @@ namespace ZipBackup.UI {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbStartOnSystemBoot = new System.Windows.Forms.CheckBox();
             this.tbErrorThreshold = new System.Windows.Forms.TextBox();
             this.lbErrorThreshold = new System.Windows.Forms.Label();
             this.tbInterval = new System.Windows.Forms.TextBox();
@@ -38,13 +39,17 @@ namespace ZipBackup.UI {
             this.passwordInput1 = new System.Windows.Forms.MaskedTextBox();
             this.tbFilePattern = new System.Windows.Forms.TextBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.cbStartOnSystemBoot = new System.Windows.Forms.CheckBox();
+            this.cbStartMinimized = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.cbStartMinimized);
             this.groupBox1.Controls.Add(this.cbStartOnSystemBoot);
             this.groupBox1.Controls.Add(this.tbErrorThreshold);
             this.groupBox1.Controls.Add(this.lbErrorThreshold);
@@ -64,6 +69,18 @@ namespace ZipBackup.UI {
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Misc configurations";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // cbStartOnSystemBoot
+            // 
+            this.cbStartOnSystemBoot.AutoSize = true;
+            this.cbStartOnSystemBoot.Location = new System.Drawing.Point(6, 167);
+            this.cbStartOnSystemBoot.Name = "cbStartOnSystemBoot";
+            this.cbStartOnSystemBoot.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.cbStartOnSystemBoot.Size = new System.Drawing.Size(147, 19);
+            this.cbStartOnSystemBoot.TabIndex = 11;
+            this.cbStartOnSystemBoot.Text = "Start on system startup";
+            this.cbStartOnSystemBoot.UseVisualStyleBackColor = true;
+            this.cbStartOnSystemBoot.CheckedChanged += new System.EventHandler(this.cbStartOnSystemBoot_CheckedChanged);
             // 
             // tbErrorThreshold
             // 
@@ -167,17 +184,17 @@ namespace ZipBackup.UI {
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // cbStartOnSystemBoot
+            // cbStartMinimized
             // 
-            this.cbStartOnSystemBoot.AutoSize = true;
-            this.cbStartOnSystemBoot.Location = new System.Drawing.Point(6, 167);
-            this.cbStartOnSystemBoot.Name = "cbStartOnSystemBoot";
-            this.cbStartOnSystemBoot.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.cbStartOnSystemBoot.Size = new System.Drawing.Size(147, 19);
-            this.cbStartOnSystemBoot.TabIndex = 11;
-            this.cbStartOnSystemBoot.Text = "Start on system startup";
-            this.cbStartOnSystemBoot.UseVisualStyleBackColor = true;
-            this.cbStartOnSystemBoot.CheckedChanged += new System.EventHandler(this.cbStartOnSystemBoot_CheckedChanged);
+            this.cbStartMinimized.AutoSize = true;
+            this.cbStartMinimized.Location = new System.Drawing.Point(44, 192);
+            this.cbStartMinimized.Name = "cbStartMinimized";
+            this.cbStartMinimized.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.cbStartMinimized.Size = new System.Drawing.Size(109, 19);
+            this.cbStartMinimized.TabIndex = 12;
+            this.cbStartMinimized.Text = "Start minimized";
+            this.cbStartMinimized.UseVisualStyleBackColor = true;
+            this.cbStartMinimized.CheckedChanged += new System.EventHandler(this.cbStartMinimized_CheckedChanged);
             // 
             // MiscConfig
             // 
@@ -212,5 +229,6 @@ namespace ZipBackup.UI {
         private System.Windows.Forms.TextBox tbErrorThreshold;
         private System.Windows.Forms.Label lbErrorThreshold;
         private System.Windows.Forms.CheckBox cbStartOnSystemBoot;
+        private System.Windows.Forms.CheckBox cbStartMinimized;
     }
 }

@@ -14,7 +14,7 @@ namespace ZipBackup.Utils {
         private Form _form;
         private readonly NotifyIcon _notifyIcon;
 
-        public MinimizeToTrayHandler(Form form, NotifyIcon notifyIcon) {
+        public MinimizeToTrayHandler(Form form, NotifyIcon notifyIcon, bool startMinimized) {
             _form = form;
             _notifyIcon = notifyIcon;
             _form.SizeChanged += OnMinimizeWindow;
@@ -22,9 +22,11 @@ namespace ZipBackup.Utils {
             _previousWindowState = _form.WindowState;
 
             _notifyIcon.Visible = false;
-            form.WindowState = FormWindowState.Minimized;
 
-            form.Load += (sender, args) => form.Hide();
+            if (startMinimized) {
+                form.WindowState = FormWindowState.Minimized;
+                form.Load += (sender, args) => form.Hide();
+            }
         }
 
         public void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e) {

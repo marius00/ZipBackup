@@ -23,7 +23,7 @@ namespace ZipBackup {
             _backupService = backupService;
             _notificationService = notificationService;
             _backupBackgroundService = new BackgroundBackupService(backupService, appSettings);
-            _minimizeToTrayHandler = new MinimizeToTrayHandler(this, notifyIcon1);
+            _minimizeToTrayHandler = new MinimizeToTrayHandler(this, notifyIcon1, appSettings.StartMinimized);
         }
 
         private void Form1_Load(object sender, EventArgs e) {

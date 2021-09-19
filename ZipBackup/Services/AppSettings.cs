@@ -18,6 +18,7 @@ namespace ZipBackup.Services {
         private int _cpuHash;
         private int _backupIntervalHours;
         private int _errorThreshold;
+        private bool _startMinimized;
 
         public void AddBackupSource(BackupSourceEntry entry) {
             _backupSources ??= new List<BackupSourceEntry>();
@@ -119,6 +120,14 @@ namespace ZipBackup.Services {
             get => _zipPassword;
             set{
                 _zipPassword = value;
+                OnMutate?.Invoke(null, null);
+            }
+        }
+
+        public bool StartMinimized {
+            get => _startMinimized;
+            set{
+                _startMinimized = value;
                 OnMutate?.Invoke(null, null);
             }
         }

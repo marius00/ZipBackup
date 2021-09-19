@@ -50,6 +50,7 @@ namespace ZipBackup.UI {
             tbErrorThreshold.KeyPress += tbInterval_KeyPress;
             tbErrorThreshold.Text = _appSettings.ErrorThreshold.ToString();
             cbStartOnSystemBoot.Checked = StartupRegistrationService.IsInstalled("ZipBackup");
+            cbStartMinimized.Checked = _appSettings.StartMinimized;
 
             passwordInput1.Enter += PasswordInput_GotFocus;
             passwordInput2.Enter += PasswordInput_GotFocus;
@@ -101,6 +102,12 @@ namespace ZipBackup.UI {
                 } else {
                     StartupRegistrationService.Uninstall("ZipBackup");
                 }
+            }
+        }
+
+        private void cbStartMinimized_CheckedChanged(object sender, EventArgs e) {
+            if (sender is CheckBox cb) {
+                _appSettings.StartMinimized = cb.Checked;
             }
         }
     }
