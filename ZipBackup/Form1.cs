@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -76,6 +77,20 @@ namespace ZipBackup {
 
             _notificationService.Clear();
             
+        }
+
+        
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e) {
+            _minimizeToTrayHandler.notifyIcon_MouseDoubleClick(sender, null);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+            Close();
+        }
+
+        private void trayContextMenuStrip_Opening(object sender, CancelEventArgs e) {
+            e.Cancel = false;
         }
     }
 }
