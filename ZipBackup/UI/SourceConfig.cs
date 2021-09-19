@@ -27,9 +27,12 @@ namespace ZipBackup.UI {
 
             listView1.SelectedIndexChanged += ListView1_SelectedIndexChanged;
             ListView1_SelectedIndexChanged(null, null);
+            listView1.MouseDoubleClick += btnEdit_Click; 
 
             contextMenuStrip1.Opening += (s, e) => e.Cancel = false;
         }
+
+
 
         private void ListView1_SelectedIndexChanged(object sender, EventArgs e) {
             var allowEditDelete = listView1.SelectedItems.Count != 0;
