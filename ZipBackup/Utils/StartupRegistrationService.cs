@@ -1,53 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using IWshRuntimeLibrary;
-using File = System.IO.File;
+using log4net;
+using Microsoft.Win32;
 
 namespace ZipBackup.Utils {
     static class StartupRegistrationService {
-        public static bool IsInstalled() {
-            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".exe";
-            string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            var files = Directory.EnumerateFiles(startUpFolderPath).Where(m => m.EndsWith(".lnk"));
-            foreach (var file in files) {
-                var target = GetLnkTarget(file);
-                if (target.EndsWith(assemblyName))
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(StartupRegistrationService));
+
+        public static bool Uninstall(string name) {
+            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
+                if (registryKey == null) {
+                    Logger.Warn(@"Could not find CurrentVersion\Run...");
+                    return false;
+                }
+
+                try {
+                    registryKey.DeleteValue(name);
                     return true;
+                } catch (Exception) {
+                    return false;
+                }
             }
-
-            return false;
         }
 
-        public static void Install() {
-            string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            var shortcut = Path.Combine(startUpFolderPath, "HistoryFilter.lnk");
-            
-            WshShell wsh = new WshShell();
-            IWshRuntimeLibrary.IWshShortcut sc = (IWshRuntimeLibrary.IWshShortcut)wsh.CreateShortcut(shortcut);
-            sc.TargetPath = Application.ExecutablePath;
-            sc.WorkingDirectory = Application.StartupPath;
-            sc.Description = "Start HistoryFilter on system start";
-            sc.Save();
+        public static bool IsInstalled(string name) {
+            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run")) {
+                if (registryKey == null) {
+                    Logger.Warn(@"Could not find CurrentVersion\Run...");
+                    return false;
+                }
+
+                var value = registryKey.GetValue(name);
+                var fullPath = Path.Combine(Application.StartupPath, Application.ExecutablePath);
+                return fullPath.Equals(value);
+            }
         }
+        
+        public static bool Install(string name) {
+            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
+                if (registryKey == null) {
+                    Logger.Warn(@"Could not find CurrentVersion\Run...");
+                    return false;
+                }
 
-        public static void Uninstall() {
-            string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            var shortcut = Path.Combine(startUpFolderPath, "HistoryFilter.lnk");
-            File.Delete(shortcut);
-        }
-
-
-        private static string GetLnkTarget(string lnkPath) {
-            var shl = new Shell32.Shell();         // Move this to class scope
-            lnkPath = Path.GetFullPath(lnkPath);
-            var dir = shl.NameSpace(Path.GetDirectoryName(lnkPath));
-            var itm = dir.Items().Item(Path.GetFileName(lnkPath));
-            var lnk = (Shell32.ShellLinkObject)itm.GetLink;
-            return lnk.Target.Path;
+                var fullPath = Path.Combine(Application.StartupPath, Application.ExecutablePath);
+                try {
+                    registryKey.SetValue(name, fullPath);
+                    return true;
+                }
+                catch (Exception ex) {
+                    Logger.Warn(ex.Message, ex);
+                    return false;
+                }
+            }
         }
     }
 }

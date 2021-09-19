@@ -49,7 +49,7 @@ namespace ZipBackup.UI {
 
             tbErrorThreshold.KeyPress += tbInterval_KeyPress;
             tbErrorThreshold.Text = _appSettings.ErrorThreshold.ToString();
-            cbStartOnSystemBoot.Checked = StartupRegistrationService.IsInstalled();
+            cbStartOnSystemBoot.Checked = StartupRegistrationService.IsInstalled("ZipBackup");
         }
 
 
@@ -89,9 +89,9 @@ namespace ZipBackup.UI {
         private void cbStartOnSystemBoot_CheckedChanged(object sender, EventArgs e) {
             if (sender is CheckBox cb) {
                 if (cb.Checked) {
-                    StartupRegistrationService.Install();
+                    StartupRegistrationService.Install("ZipBackup");
                 } else {
-                    StartupRegistrationService.Uninstall();
+                    StartupRegistrationService.Uninstall("ZipBackup");
                 }
             }
         }
