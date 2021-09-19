@@ -20,7 +20,10 @@ namespace ZipBackup.Utils {
                 return path;
             }
         }
-
+#if DEBUG
+        public static string SettingsFile => Path.Combine(CoreFolder, "settings-debug.json");
+#else
         public static string SettingsFile => Path.Combine(CoreFolder, "settings.json");
+#endif
     }
 }
