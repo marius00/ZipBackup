@@ -37,7 +37,7 @@ namespace ZipBackup.Backups {
             // Include our own config as well
             if (sources.All(src => src.Folder != GlobalPaths.CoreFolder)) {
                 _appSettings.AddBackupSource(new BackupSourceEntry {
-                    Folder = GlobalPaths.CoreFolder,
+                    Folder = EnvPathConverterUtil.ToEnvironmentalPath(GlobalPaths.CoreFolder),
                     Name = "ZipBackup",
                     InclusionMask = ".json",
                     Recursive = false,
@@ -123,7 +123,6 @@ namespace ZipBackup.Backups {
 
 
             if (File.Exists(outputFilename)) {
-                Logger.Info($"The output filename {outputFilename} already exists, overwriting");
                 File.Delete(outputFilename);
             }
 
