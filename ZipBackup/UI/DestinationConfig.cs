@@ -26,6 +26,8 @@ namespace ZipBackup.UI {
 
             listView1.SelectedIndexChanged += ListView1_SelectedIndexChanged;
             ListView1_SelectedIndexChanged(null, null);
+
+            contextMenuStrip1.Opening += (s, e) => e.Cancel = false;
         }
 
         private void ListView1_SelectedIndexChanged(object sender, EventArgs e) {
@@ -95,6 +97,14 @@ namespace ZipBackup.UI {
                     }
                 }
             }
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e) {
+            btnEdit_Click(sender, e);
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
+            btnDelete_Click(sender, e);
         }
     }
 }
