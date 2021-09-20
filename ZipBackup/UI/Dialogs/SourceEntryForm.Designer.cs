@@ -1,5 +1,5 @@
 ﻿
-namespace ZipBackup.UI {
+namespace ZipBackup.UI.Dialogs {
     partial class SourceEntryForm {
         /// <summary>
         /// Required designer variable.
@@ -50,10 +50,10 @@ namespace ZipBackup.UI {
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(107, 22);
+            this.tbName.Location = new System.Drawing.Point(107, 51);
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(573, 23);
-            this.tbName.TabIndex = 1;
+            this.tbName.TabIndex = 4;
             // 
             // tbExclusionFilter
             // 
@@ -79,10 +79,10 @@ namespace ZipBackup.UI {
             // 
             this.tbPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbPath.Location = new System.Drawing.Point(107, 51);
+            this.tbPath.Location = new System.Drawing.Point(107, 22);
             this.tbPath.Name = "tbPath";
             this.tbPath.Size = new System.Drawing.Size(439, 23);
-            this.tbPath.TabIndex = 3;
+            this.tbPath.TabIndex = 1;
             // 
             // lbInclusionFilter
             // 
@@ -105,19 +105,19 @@ namespace ZipBackup.UI {
             // lbName
             // 
             this.lbName.AutoSize = true;
-            this.lbName.Location = new System.Drawing.Point(14, 25);
+            this.lbName.Location = new System.Drawing.Point(14, 54);
             this.lbName.Name = "lbName";
             this.lbName.Size = new System.Drawing.Size(39, 15);
-            this.lbName.TabIndex = 0;
+            this.lbName.TabIndex = 3;
             this.lbName.Text = "Name";
             // 
             // lbPath
             // 
             this.lbPath.AutoSize = true;
-            this.lbPath.Location = new System.Drawing.Point(14, 54);
+            this.lbPath.Location = new System.Drawing.Point(14, 25);
             this.lbPath.Name = "lbPath";
             this.lbPath.Size = new System.Drawing.Size(31, 15);
-            this.lbPath.TabIndex = 2;
+            this.lbPath.TabIndex = 0;
             this.lbPath.Text = "Path";
             // 
             // groupBox1
@@ -127,15 +127,15 @@ namespace ZipBackup.UI {
             this.groupBox1.Controls.Add(this.lbCompression);
             this.groupBox1.Controls.Add(this.cbCompression);
             this.groupBox1.Controls.Add(this.cbIncludeSubfodlers);
+            this.groupBox1.Controls.Add(this.tbPath);
+            this.groupBox1.Controls.Add(this.lbPath);
             this.groupBox1.Controls.Add(this.btnBrowsePath);
             this.groupBox1.Controls.Add(this.lbExclusionFilter);
-            this.groupBox1.Controls.Add(this.lbPath);
             this.groupBox1.Controls.Add(this.tbExclusionFilter);
             this.groupBox1.Controls.Add(this.lbInclusionFilter);
             this.groupBox1.Controls.Add(this.tbName);
             this.groupBox1.Controls.Add(this.tbInclusionFilter);
             this.groupBox1.Controls.Add(this.lbName);
-            this.groupBox1.Controls.Add(this.tbPath);
             this.groupBox1.Location = new System.Drawing.Point(6, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(710, 197);
@@ -178,10 +178,10 @@ namespace ZipBackup.UI {
             // btnBrowsePath
             // 
             this.btnBrowsePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBrowsePath.Location = new System.Drawing.Point(552, 51);
+            this.btnBrowsePath.Location = new System.Drawing.Point(552, 22);
             this.btnBrowsePath.Name = "btnBrowsePath";
             this.btnBrowsePath.Size = new System.Drawing.Size(128, 23);
-            this.btnBrowsePath.TabIndex = 4;
+            this.btnBrowsePath.TabIndex = 2;
             this.btnBrowsePath.Text = "Browse..";
             this.btnBrowsePath.UseVisualStyleBackColor = true;
             this.btnBrowsePath.Click += new System.EventHandler(this.btnBrowsePath_Click);

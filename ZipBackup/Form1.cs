@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using log4net;
+using log4net.Repository.Hierarchy;
 using ZipBackup.Backups;
 using ZipBackup.Services;
 using ZipBackup.UI;
@@ -10,6 +12,7 @@ using ZipBackup.Utils;
 
 namespace ZipBackup {
     public partial class Form1 : Form {
+        static readonly ILog Logger = LogManager.GetLogger(typeof(Form1));
         private readonly AppSettings _appSettings;
         private readonly BackgroundBackupService _backupBackgroundService;
         private readonly BackupService _backupService;
@@ -67,6 +70,7 @@ namespace ZipBackup {
             _minimizeToTrayHandler?.Dispose();
             _toastTimer.Stop();
             _backupBackgroundService.Dispose();
+            Logger.Info($"Shutting down... reason: {e.CloseReason}"); 
         }
 
         private void _toastTimer_Tick(object sender, EventArgs e) {

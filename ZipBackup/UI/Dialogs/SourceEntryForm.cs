@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipBackup.Backups;
 using ZipBackup.Utils;
 
-namespace ZipBackup.UI {
+namespace ZipBackup.UI.Dialogs {
     public partial class SourceEntryForm : Form {
         public BackupSourceEntry Entry;
 
@@ -46,6 +40,15 @@ namespace ZipBackup.UI {
         private void TbPath_OnPaste(object sender, EventArgs e) {
             var arg = (TextBoxWithPaste.PasteEventArg) e;
             tbPath.Text = EnvPathConverterUtil.ToEnvironmentalPath(arg.Clipboard);
+
+            UpdateNameIfMissing(arg.Clipboard);
+        }
+
+        private void UpdateNameIfMissing(string path) {
+            if (string.IsNullOrEmpty(tbName.Text)) {
+                // Not using Path or Directory here, as we have no idea if the pasted path is valid.
+                tbName.Text = path.Substring(1 + path.LastIndexOf(@"\", StringComparison.Ordinal));
+            }
         }
 
         private void TbName_KeyPress(object sender, KeyPressEventArgs e) {
@@ -185,6 +188,8 @@ namespace ZipBackup.UI {
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK) {
                     DialogResult = DialogResult.None;
                     tbPath.Text = EnvPathConverterUtil.ToEnvironmentalPath(folderBrowserDialog.SelectedPath);
+
+                    UpdateNameIfMissing(folderBrowserDialog.SelectedPath);
                 }
             }
         }

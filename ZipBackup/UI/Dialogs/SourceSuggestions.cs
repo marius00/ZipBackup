@@ -57,7 +57,8 @@ namespace ZipBackup.UI.Dialogs {
                 new Suggestion { Path = @"%LocalAppData%\Logitech\Logitech Gaming Software", Name = "Logitech Gaming Software" },
                 new Suggestion { Path = @"%appdata%\Mozilla\Firefox", Name = "Firefox" },
                 new Suggestion { Path = @"%programfiles%\OpenVPN\config", Name = "OpenVPN certs" },
-                //%programdata%\FlashFXP\5 <-- no idea if it works cross-pc.. check in a VM?
+                new Suggestion { Path = @"%LocalAppData%\PersistentWindows", Name = "PersistentWindows" },
+                new Suggestion { Path = @"%programdata%\FlashFXP\5", Name = "FlashFXP 5" },
             };
 
             var existing = _appSettings.BackupSources.Select(s => s.Folder).ToList();
