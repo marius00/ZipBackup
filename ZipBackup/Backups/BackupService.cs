@@ -167,7 +167,7 @@ namespace ZipBackup.Backups {
         /// <param name="entry"></param>
         /// <returns></returns>
         private bool CanBackup(BackupSourceEntry entry) {
-            var nextUpdateTime = DateTimeEpochExtension.FromTimestamp(entry.NextUpdate);
+            var nextUpdateTime = DateTimeEpochExtension.FromUtcTimestamp(entry.NextUpdate);
             return DateTime.UtcNow > nextUpdateTime;
         }
 

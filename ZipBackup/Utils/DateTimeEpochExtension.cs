@@ -11,6 +11,12 @@ namespace ZipBackup.Utils {
             return result > 0 ? result : 0;
         }
 
+        public static DateTime FromUtcTimestamp(long value) {
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddMilliseconds(value).ToUniversalTime();
+            return dtDateTime;
+        }
+
         public static DateTime FromTimestamp(long value) {
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddMilliseconds(value).ToLocalTime();
