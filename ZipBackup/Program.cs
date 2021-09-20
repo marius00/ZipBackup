@@ -31,7 +31,7 @@ namespace ZipBackup {
             }
             var bs = new BackupService(appSettings);
 
-            UsageStatisticsReporter.UrlStats = "https://webstats.evilsoft.net/zipbackup";
+            UsageStatisticsReporter.UrlStats = "https://webstats.evilsoft.net/report/zipbackup";
             UsageStatisticsReporter.Uuid = appSettings.UUID;
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);

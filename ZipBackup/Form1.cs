@@ -18,6 +18,7 @@ namespace ZipBackup {
         private readonly BackupService _backupService;
         private readonly NotificationService _notificationService;
         private MinimizeToTrayHandler _minimizeToTrayHandler;
+        private readonly UsageStatisticsReporterThread _usageStatisticsReporterThread = new UsageStatisticsReporterThread();
         private System.Windows.Forms.Timer _toastTimer;
 
         public Form1(AppSettings appSettings, BackupService backupService, NotificationService notificationService) {
@@ -70,7 +71,8 @@ namespace ZipBackup {
             _minimizeToTrayHandler?.Dispose();
             _toastTimer.Stop();
             _backupBackgroundService.Dispose();
-            Logger.Info($"Shutting down... reason: {e.CloseReason}"); 
+            _usageStatisticsReporterThread.Dispose();
+            Logger.Info($"Shutting down... reason: {e.CloseReason}");
         }
 
         private void _toastTimer_Tick(object sender, EventArgs e) {
