@@ -44,6 +44,9 @@ namespace ZipBackup.Utils {
                     string json = File.ReadAllText(filename);
                     var template = JsonConvert.DeserializeObject<AppSettings>(json, JsonSerializerSettings);
                     if (template != null) {
+                        // Avoid nullpointers on first read
+                        template.BackupDestinations ??= new();
+                        template.BackupSources ??= new();
                         return new SettingsReader(template, filename);
                     }
                 }
@@ -56,10 +59,15 @@ namespace ZipBackup.Utils {
             }
 
             Logger.Info("Could not find settings JSON, defaulting to no settings.");
+
             return new SettingsReader(new AppSettings {
                 FilenamePattern = "dddd",
                 BackupIntervalHours = 16,
-                ErrorThreshold = 5
+                ErrorThreshold = 5,
+                BackupSources = new (),
+                BackupDestinations = new(),
+                StartMinimized = false,
+                
             }, filename);
         }
     }
