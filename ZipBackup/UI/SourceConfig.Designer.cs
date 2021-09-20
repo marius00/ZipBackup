@@ -38,6 +38,7 @@ namespace ZipBackup.UI {
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnSuggestions = new System.Windows.Forms.Button();
+            this.chNextSync = new System.Windows.Forms.ColumnHeader();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +51,8 @@ namespace ZipBackup.UI {
             this.cbName,
             this.chPath,
             this.chInclusionMask,
-            this.chExclusionMask});
+            this.chExclusionMask,
+            this.chNextSync});
             this.listView1.ContextMenuStrip = this.contextMenuStrip1;
             this.listView1.FullRowSelect = true;
             this.listView1.HideSelection = false;
@@ -158,6 +160,11 @@ namespace ZipBackup.UI {
             this.btnSuggestions.UseVisualStyleBackColor = true;
             this.btnSuggestions.Click += new System.EventHandler(this.btnSuggestions_Click);
             // 
+            // chNextSync
+            // 
+            this.chNextSync.Text = "Next Sync";
+            this.chNextSync.Width = 100;
+            // 
             // SourceConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -195,5 +202,6 @@ namespace ZipBackup.UI {
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem backupnowToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader chNextSync;
     }
 }

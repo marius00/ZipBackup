@@ -8,16 +8,21 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using log4net;
+using log4net.Repository.Hierarchy;
 using ZipBackup.Backups;
 using ZipBackup.Services;
 using ZipBackup.Settings;
 using ZipBackup.UI.Dialogs;
+using ZipBackup.Utils;
 
 namespace ZipBackup.UI {
     public partial class SourceConfig : Form {
+        static readonly ILog Logger = LogManager.GetLogger(typeof(SourceConfig));
         private readonly AppSettings _appSettings;
         private readonly BackupService _backupService;
         private readonly NotificationService _notificationService;
+        private System.Windows.Forms.Timer _refreshListviewTimer;
 
         public SourceConfig(AppSettings appSettings, BackupService backupService, NotificationService notificationService) {
             _appSettings = appSettings;
@@ -33,12 +38,22 @@ namespace ZipBackup.UI {
 
             listView1.SelectedIndexChanged += ListView1_SelectedIndexChanged;
             ListView1_SelectedIndexChanged(null, null);
-            listView1.MouseDoubleClick += btnEdit_Click; 
+            listView1.MouseDoubleClick += btnEdit_Click;
 
             contextMenuStrip1.Opening += (s, e) => e.Cancel = false;
+
+
+            _refreshListviewTimer = new System.Windows.Forms.Timer {Interval = 5000};
+            _refreshListviewTimer.Tick += _refreshListviewTimer_Tick;
+            ;
+            _refreshListviewTimer.Start();
         }
 
-
+        private void _refreshListviewTimer_Tick(object sender, EventArgs e) {
+            if (Visible) {
+                UpdateListview();
+            }
+        }
 
         private void ListView1_SelectedIndexChanged(object sender, EventArgs e) {
             var allowEditDelete = listView1.SelectedItems.Count != 0;
@@ -47,13 +62,20 @@ namespace ZipBackup.UI {
         }
 
         private void UpdateListview() {
+            var entry = GetSelectedItem();
+
             listView1.BeginUpdate();
             listView1.Items.Clear();
 
             var sources = _appSettings.BackupSources ?? new List<BackupSourceEntry>();
             foreach (var source in sources.ToList()) {
-                listView1.Items.Add(ToListViewItem(source));
+                var srcEntry = ToListViewItem(source);
+                if (entry != null && entry.Folder == source.Folder)
+                    srcEntry.Selected = true;
+
+                listView1.Items.Add(srcEntry);
             }
+
             listView1.EndUpdate();
 
 
@@ -67,6 +89,7 @@ namespace ZipBackup.UI {
             lvi.SubItems.Add(entry.Folder);
             lvi.SubItems.Add(entry.InclusionMask);
             lvi.SubItems.Add(entry.ExclusionMask);
+            lvi.SubItems.Add(DateTimeEpochExtension.FromTimestamp(entry.NextUpdate).ToString("yyyy-MM-dd HH:mm"));
             lvi.Tag = entry;
 
             return lvi;
@@ -80,12 +103,21 @@ namespace ZipBackup.UI {
             }
         }
 
+        private BackupSourceEntry GetSelectedItem() {
+            foreach (ListViewItem lvi in listView1.SelectedItems) {
+                var entry = (BackupSourceEntry) lvi.Tag;
+                return entry;
+            }
+
+            return null;
+        }
+
         private void btnEdit_Click(object sender, EventArgs e) {
             if (listView1.SelectedItems.Count == 0)
                 MessageBox.Show("Error - Nothing selected");
             else {
-                foreach (ListViewItem lvi in listView1.SelectedItems) {
-                    var entry = (BackupSourceEntry) lvi.Tag;
+                var entry = GetSelectedItem();
+                if (entry != null) {
                     var srcEntryForm = new SourceEntryForm(entry);
                     if (srcEntryForm.ShowDialog() == DialogResult.OK) {
                         _appSettings.RemoveBackupSource(entry);
@@ -100,12 +132,10 @@ namespace ZipBackup.UI {
             if (listView1.SelectedItems.Count == 0)
                 MessageBox.Show("Error - Nothing selected");
             else {
-                foreach (ListViewItem lvi in listView1.SelectedItems) {
-                    if (MessageBox.Show("Are you sure you wish to delete this entry?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
-                        var entry = (BackupSourceEntry)lvi.Tag;
-                        _appSettings.RemoveBackupSource(entry);
-                        UpdateListview();
-                    }
+                var entry = GetSelectedItem();
+                if (entry != null && MessageBox.Show("Are you sure you wish to delete this entry?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
+                    _appSettings.RemoveBackupSource(entry);
+                    UpdateListview();
                 }
             }
         }
@@ -135,12 +165,11 @@ namespace ZipBackup.UI {
                 MessageBox.Show("Error - Nothing selected");
             else {
                 foreach (ListViewItem lvi in listView1.SelectedItems) {
-                    var entry = (BackupSourceEntry)lvi.Tag;
+                    var entry = (BackupSourceEntry) lvi.Tag;
                     _notificationService.Add(Guid.NewGuid().ToString(), $"Starting backup of {entry.Name}...\nThis may take a while..");
                     ThreadPool.QueueUserWorkItem(m => _backupService.PerformBackup(entry));
                 }
             }
-
         }
     }
 }
