@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipBackup.Backups;
@@ -14,9 +15,13 @@ using ZipBackup.UI.Dialogs;
 namespace ZipBackup.UI {
     public partial class SourceConfig : Form {
         private readonly AppSettings _appSettings;
+        private readonly BackupService _backupService;
+        private readonly NotificationService _notificationService;
 
-        public SourceConfig(AppSettings appSettings) {
+        public SourceConfig(AppSettings appSettings, BackupService backupService, NotificationService notificationService) {
             _appSettings = appSettings;
+            _backupService = backupService;
+            _notificationService = notificationService;
             InitializeComponent();
             TopLevel = false;
         }
@@ -122,6 +127,19 @@ namespace ZipBackup.UI {
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
             btnDelete_Click(sender, e);
+        }
+
+        private void backupnowToolStripMenuItem_Click(object sender, EventArgs e) {
+            if (listView1.SelectedItems.Count == 0)
+                MessageBox.Show("Error - Nothing selected");
+            else {
+                foreach (ListViewItem lvi in listView1.SelectedItems) {
+                    var entry = (BackupSourceEntry)lvi.Tag;
+                    _notificationService.Add(Guid.NewGuid().ToString(), $"Starting backup of {entry.Name}...\nThis may take a while..");
+                    ThreadPool.QueueUserWorkItem(m => _backupService.PerformBackup(entry));
+                }
+            }
+
         }
     }
 }

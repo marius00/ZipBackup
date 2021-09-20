@@ -34,7 +34,7 @@ namespace ZipBackup {
             ExceptionHandler.EnableLogUnhandledOnThread();
             tabControl.Dock = DockStyle.Fill;
 
-            var srcConfig = new SourceConfig(_appSettings);
+            var srcConfig = new SourceConfig(_appSettings, _backupService, _notificationService);
             tabPage1.Controls.Add(srcConfig);
             srcConfig.Show();
 

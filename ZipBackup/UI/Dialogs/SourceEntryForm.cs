@@ -101,7 +101,9 @@ namespace ZipBackup.UI.Dialogs {
             if (!IsValidRegex(pattern)) {
                 errorProvider.SetError(tbInclusionFilter, "Invalid regex");
             }
-            errorProvider.Clear();
+            else {
+                errorProvider.Clear();
+            }
 
             e.Handled = false;
         }
@@ -118,7 +120,9 @@ namespace ZipBackup.UI.Dialogs {
             if (!IsValidRegex(pattern)) {
                 errorProvider.SetError(tbExclusionFilter, "Invalid regex");
             }
-            errorProvider.Clear();
+            else {
+                errorProvider.Clear();
+            }
 
             e.Handled = false;
         }

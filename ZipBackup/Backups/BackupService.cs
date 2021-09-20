@@ -20,6 +20,7 @@ namespace ZipBackup.Backups {
             _appSettings = appSettings;
         }
 
+
         /// <summary>
         /// Attempts to perform a backup for every single source entry, and store at each destination folder.
         /// </summary>
@@ -30,7 +31,7 @@ namespace ZipBackup.Backups {
 
             var destinations = _appSettings.BackupDestinations.ToList();
             if (destinations.Count == 0) {
-                Logger.Warn($"Attempting to perform backup of {sources.Count} sources, but no destinations are configured. Aborting.");
+                Logger.Debug($"Attempting to perform backup of {sources.Count} sources, but no destinations are configured. Aborting.");
                 return;
             }
 
@@ -48,11 +49,11 @@ namespace ZipBackup.Backups {
             }
 
 
-
             var plaintextPassword = _appSettings.ZipPasswordPlaintext; // CPU heavy to read
             if (!string.IsNullOrEmpty(plaintextPassword) && _appSettings.CpuHash != EncryptionUtil.GetDeterministicHashCode(EncryptionUtil.GetCpuSerial())) {
                 Logger.Error("The CPU serial does not match the expected value. The zip encryption password must be reset before continuing");
                 Logger.Error($"Got {_appSettings.CpuHash} expected {EncryptionUtil.GetDeterministicHashCode(EncryptionUtil.GetCpuSerial())}");
+
                 // TODO: This could trigger an action which redirects to password config
                 OnError?.Invoke(this, new BackupErrorEventArg {
                     Component = "Core",
@@ -65,36 +66,89 @@ namespace ZipBackup.Backups {
             // Backup each source folder
             foreach (var source in sources) {
                 if (CanBackup(source)) {
-                    var tempFileName = Path.GetTempFileName();
-                    try {
-                        if (Backup(source, tempFileName, plaintextPassword)) {
-                            foreach (var dest in destinations) {
-                                File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true);
-                            }
-
-                            // Success: No more errors.
-                            source.Errors.Clear();
-                            source.NextUpdate = DateTime.UtcNow.AddHours(_appSettings.BackupIntervalHours).ToTimestamp();
-                        }
-                        else {
-                            OnBackupError(source);
-                        }
-
-                    }
-                    catch (Exception ex) {
-                        Logger.Warn(ex.Message, ex);
-                        source.Errors.Add($"Unknown error backing up {source.Name}\n{ex.Message}");
-                        OnBackupError(source);
-                    }
-                    finally {
-                        File.Delete(tempFileName);
-                    }
+                    PerformBackup(source, plaintextPassword);
                 }
             }
 
             _appSettings.BackupSourcesHasMutated();
         }
 
+
+        /// <summary>
+        /// Performs a backup on a provided source, storing it to all destinations.
+        /// External usage only as it does not cache the password decryption
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public bool PerformBackup(BackupSourceEntry source) {
+            var plaintextPassword = _appSettings.ZipPasswordPlaintext; // CPU heavy to read
+            var result = PerformBackup(source, plaintextPassword);
+            _appSettings.BackupSourcesHasMutated();
+
+            if (result) {
+                OnError?.Invoke(this, new BackupErrorEventArg {
+                    Component = Guid.NewGuid().ToString(), // "Always show"
+                    Content = $"Successfully backed up {source.Name}"
+                });
+            }
+            else {
+                OnError?.Invoke(this, new BackupErrorEventArg {
+                    Component = Guid.NewGuid().ToString(), // "Always show"
+                    Content = $"Error backing up {source.Name}\n{string.Join("\n", source.Errors)}"
+                });
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Performs a backup on a provided source, storing it to all destinations.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="plaintextPassword"></param>
+        /// <returns></returns>
+        private bool PerformBackup(BackupSourceEntry source, string plaintextPassword) {
+            var destinations = _appSettings.BackupDestinations.ToList(); // TODO: Toast if empty
+            if (destinations.Count == 0) {
+                OnError?.Invoke(this, new BackupErrorEventArg {
+                    Component = Guid.NewGuid().ToString(), // "Always show"
+                    Content = $"Error backing up {source.Name}\nNo backup destinations are configured"
+                });
+            }
+
+            var tempFileName = Path.GetTempFileName();
+            try {
+                if (Backup(source, tempFileName, plaintextPassword)) {
+                    foreach (var dest in destinations) {
+                        File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true);
+                    }
+
+                    // Success: No more errors.
+                    source.Errors.Clear();
+                    source.NextUpdate = DateTime.UtcNow.AddHours(_appSettings.BackupIntervalHours).ToTimestamp();
+                    return true;
+                } else {
+                    OnBackupError(source);
+                }
+
+            } catch (Exception ex) {
+                Logger.Warn(ex.Message, ex);
+                source.Errors.Add($"Unknown error backing up {source.Name}\n{ex.Message}");
+                OnBackupError(source);
+            } finally {
+                File.Delete(tempFileName);
+            }
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// 1. Add a retry delay of 45 minutes
+        /// 2. Trigger an error event if the error threshold has been reached.
+        /// </summary>
+        /// <param name="source"></param>
         private void OnBackupError(BackupSourceEntry source) {
             // Retry in 45 minutes
             source.NextUpdate = DateTime.UtcNow.AddMinutes(45).ToTimestamp();
@@ -106,6 +160,7 @@ namespace ZipBackup.Backups {
             }
         }
 
+
         /// <summary>
         /// Checks if the source has been backed up on the past X hours, as defined in the AppSettings
         /// </summary>
@@ -116,13 +171,14 @@ namespace ZipBackup.Backups {
             return DateTime.UtcNow > nextUpdateTime;
         }
 
+
         /// <summary>
         /// Performs a backup on a single source/directory
         /// </summary>
         /// <param name="source"></param>
         /// <param name="outputFilename"></param>
         /// <param name="plaintextPassword"></param>
-        public bool Backup(BackupSourceEntry source, string outputFilename, string plaintextPassword) {
+        private bool Backup(BackupSourceEntry source, string outputFilename, string plaintextPassword) {
             string folder = EnvPathConverterUtil.FromEnvironmentalPath(source.Folder);
             if (!Directory.Exists(folder)) {
                 Logger.Warn($"The requested directory {folder} does not exist");
@@ -191,8 +247,8 @@ namespace ZipBackup.Backups {
                         }
                     }
 
-                    zip.Save(outputFilename);
                 }
+                zip.Save(outputFilename);
             }
 
             Logger.Debug($"Successfully zipped {files.Count} files to {outputFilename}");

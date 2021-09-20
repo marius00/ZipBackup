@@ -20,7 +20,7 @@ namespace ZipBackup.Backups {
         /// <summary>
         /// Patterns to exclude. Regex.
         /// </summary>
-        public string ExclusionMask { get; set; } = "node_modules|build|bin\\\\debug|bin\\\\release|\\.lock$";
+        public string ExclusionMask { get; set; } = "node_modules|build|bin\\\\debug|bin\\\\release|\\.lock$|-shm\\.[\\w]{3}$";
 
         /// <summary>
         /// Patterns to include. Regex.
