@@ -69,6 +69,8 @@ namespace ZipBackup.UI.Dialogs {
                 e.Handled = true;
                 return;
             }
+
+            errorProvider.Clear();
             var result = (tbName.Text + e.KeyChar).ToUpperInvariant();
             ValidateName(result);
         }
@@ -84,6 +86,7 @@ namespace ZipBackup.UI.Dialogs {
                 errorProvider.SetError(tbName, $"The name '{name}' is prohibited");
                 return false;
             }
+            errorProvider.Clear();
 
             return true;
         }
@@ -98,6 +101,7 @@ namespace ZipBackup.UI.Dialogs {
             if (!IsValidRegex(pattern)) {
                 errorProvider.SetError(tbInclusionFilter, "Invalid regex");
             }
+            errorProvider.Clear();
 
             e.Handled = false;
         }
@@ -114,6 +118,7 @@ namespace ZipBackup.UI.Dialogs {
             if (!IsValidRegex(pattern)) {
                 errorProvider.SetError(tbExclusionFilter, "Invalid regex");
             }
+            errorProvider.Clear();
 
             e.Handled = false;
         }
