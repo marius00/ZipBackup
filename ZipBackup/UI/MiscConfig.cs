@@ -59,7 +59,7 @@ namespace ZipBackup.UI {
             passwordInput1.Enter += PasswordInput_GotFocus;
             passwordInput2.Enter += PasswordInput_GotFocus;
 
-            if (string.IsNullOrEmpty(_appSettings.ZipPasswordPlaintext)) {
+            if (string.IsNullOrEmpty(_appSettings.ZipPassword)) {
                 passwordInput1.Text = "";
                 passwordInput2.Text = "";
             }
