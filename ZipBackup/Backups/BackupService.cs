@@ -7,6 +7,7 @@ using Windows.UI.Input;
 using Ionic.Zip;
 using log4net;
 using ZipBackup.Services;
+using ZipBackup.Settings;
 using ZipBackup.Utils;
 
 
@@ -266,7 +267,7 @@ namespace ZipBackup.Backups {
             if (!string.IsNullOrEmpty(source.InclusionMask)) {
                 return Regex.IsMatch(filename, source.InclusionMask, RegexOptions.IgnoreCase);
             } else if (!string.IsNullOrEmpty(source.ExclusionMask)) {
-                return !Regex.IsMatch(filename, source.ExclusionMask, RegexOptions.IgnoreCase);
+                return !Regex.IsMatch(filename, RegexUtils.ApplyAppSettings(source.ExclusionMask, _appSettings), RegexOptions.IgnoreCase);
             }
 
             return true;

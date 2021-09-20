@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ZipBackup.Backups;
 using ZipBackup.Utils;
 
-namespace ZipBackup.Services {
+namespace ZipBackup.Settings {
     public class AppSettings {
         public event EventHandler OnMutate;
         private List<BackupSourceEntry> _backupSources;
@@ -19,6 +16,7 @@ namespace ZipBackup.Services {
         private int _backupIntervalHours;
         private int _errorThreshold;
         private bool _startMinimized;
+        private string _defaultExclusionPattern;
 
         public void AddBackupSource(BackupSourceEntry entry) {
             _backupSources ??= new List<BackupSourceEntry>();
@@ -128,6 +126,14 @@ namespace ZipBackup.Services {
             get => _startMinimized;
             set{
                 _startMinimized = value;
+                OnMutate?.Invoke(null, null);
+            }
+        }
+
+        public string DefaultExclusionPattern {
+            get => _defaultExclusionPattern;
+            set{
+                _defaultExclusionPattern = value;
                 OnMutate?.Invoke(null, null);
             }
         }

@@ -7,6 +7,7 @@ using log4net;
 using log4net.Config;
 using ZipBackup.Backups;
 using ZipBackup.Services;
+using ZipBackup.Settings;
 using ZipBackup.Utils;
 
 namespace ZipBackup {

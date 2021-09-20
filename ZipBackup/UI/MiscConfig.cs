@@ -6,10 +6,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
 using ZipBackup.Services;
+using ZipBackup.Settings;
 using ZipBackup.Utils;
 
 namespace ZipBackup.UI {
@@ -48,6 +50,7 @@ namespace ZipBackup.UI {
             tbInterval.KeyPress += tbInterval_KeyPress;
             tbInterval.Text = _appSettings.BackupIntervalHours.ToString();
 
+            tbDefaultExclusion.Text = _appSettings.DefaultExclusionPattern;
             tbErrorThreshold.KeyPress += tbInterval_KeyPress;
             tbErrorThreshold.Text = _appSettings.ErrorThreshold.ToString();
             cbStartOnSystemBoot.Checked = StartupRegistrationService.IsInstalled("ZipBackup");
@@ -122,7 +125,19 @@ namespace ZipBackup.UI {
                 FileName = "https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings",
                 UseShellExecute = true
             };
+
             Process.Start(psi);
+        }
+
+        private void tbDefaultExclusion_TextChanged(object sender, EventArgs e) {
+            var tb = (TextBox)sender;
+            
+            if (!string.IsNullOrEmpty(tb.Text) && !RegexUtils.IsValidRegex(tb.Text)) {
+                errorProvider1.SetError(tb, "Invalid regex");
+            } else {
+                _appSettings.DefaultExclusionPattern = tb.Text;
+                errorProvider1.Clear();
+            }
         }
     }
 }

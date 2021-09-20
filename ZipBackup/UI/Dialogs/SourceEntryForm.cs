@@ -98,7 +98,7 @@ namespace ZipBackup.UI.Dialogs {
         /// <param name="e"></param>
         private void InclusionFilter_KeyPress(object sender, KeyPressEventArgs e) {
             var pattern = tbInclusionFilter.Text + e.KeyChar;
-            if (!IsValidRegex(pattern)) {
+            if (!RegexUtils.IsValidRegex(pattern)) {
                 errorProvider.SetError(tbInclusionFilter, "Invalid regex");
             }
             else {
@@ -117,7 +117,7 @@ namespace ZipBackup.UI.Dialogs {
         private void ExclusionFilter_KeyPress(object sender, KeyPressEventArgs e) {
             var pattern = tbExclusionFilter.Text + e.KeyChar;
 
-            if (!IsValidRegex(pattern)) {
+            if (!RegexUtils.IsValidRegex(pattern)) {
                 errorProvider.SetError(tbExclusionFilter, "Invalid regex");
             }
             else {
@@ -144,24 +144,16 @@ namespace ZipBackup.UI.Dialogs {
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
-        private bool IsValidRegex(string expression) {
-            try {
-                Regex.IsMatch("abcc", expression, RegexOptions.IgnoreCase);
-                return true;
-            } catch (RegexParseException) {
-                return false;
-            }
-        }
+        
 
         private void btnSave_Click(object sender, EventArgs e) {
-            if (!IsValidRegex(tbInclusionFilter.Text)) {
+            if (!RegexUtils.IsValidRegex(tbInclusionFilter.Text)) {
                 errorProvider.SetError(tbInclusionFilter, "Invalid regex");
                 return;
             }
 
             if (tbInclusionFilter.Text.Length == 0) {
-                if (!IsValidRegex(tbExclusionFilter.Text)) {
+                if (!RegexUtils.IsValidRegex(tbExclusionFilter.Text)) {
                     errorProvider.SetError(tbExclusionFilter, "Invalid regex");
                     return;
                 }

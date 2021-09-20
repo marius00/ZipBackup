@@ -19,7 +19,7 @@
     <Compile Update="UI\Dialogs\SourceEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="UI\TextBoxWithPaste.cs">
+    <Compile Update="UI\Controls\TextBoxWithPaste.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

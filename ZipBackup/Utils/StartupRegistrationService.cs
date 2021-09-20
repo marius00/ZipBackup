@@ -32,7 +32,7 @@ namespace ZipBackup.Utils {
                 }
 
                 var value = registryKey.GetValue(name);
-                var fullPath = Path.Combine(Application.StartupPath, Application.ExecutablePath);
+                var fullPath = "\"" + Path.Combine(Application.StartupPath, Application.ExecutablePath) + "\"";
                 return fullPath.Equals(value);
             }
         }
@@ -44,7 +44,7 @@ namespace ZipBackup.Utils {
                     return false;
                 }
 
-                var fullPath = Path.Combine(Application.StartupPath, Application.ExecutablePath);
+                var fullPath = "\"" + Path.Combine(Application.StartupPath, Application.ExecutablePath) + "\"";
                 try {
                     registryKey.SetValue(name, fullPath);
                     return true;

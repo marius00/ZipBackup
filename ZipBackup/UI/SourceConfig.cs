@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipBackup.Backups;
 using ZipBackup.Services;
+using ZipBackup.Settings;
 using ZipBackup.UI.Dialogs;
 
 namespace ZipBackup.UI {

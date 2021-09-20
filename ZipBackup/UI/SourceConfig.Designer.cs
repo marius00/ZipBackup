@@ -32,12 +32,12 @@ namespace ZipBackup.UI {
             this.chExclusionMask = new System.Windows.Forms.ColumnHeader();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.backupnowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnSuggestions = new System.Windows.Forms.Button();
-            this.backupnowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,7 +57,7 @@ namespace ZipBackup.UI {
             this.listView1.Location = new System.Drawing.Point(12, 12);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(790, 257);
+            this.listView1.Size = new System.Drawing.Size(790, 274);
             this.listView1.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -90,19 +90,26 @@ namespace ZipBackup.UI {
             this.backupnowToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(140, 70);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.editToolStripMenuItem.Text = "&Edit";
             this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
+            // 
+            // backupnowToolStripMenuItem
+            // 
+            this.backupnowToolStripMenuItem.Name = "backupnowToolStripMenuItem";
+            this.backupnowToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.backupnowToolStripMenuItem.Text = "Backup &now";
+            this.backupnowToolStripMenuItem.Click += new System.EventHandler(this.backupnowToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.deleteToolStripMenuItem.Text = "&Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -110,9 +117,9 @@ namespace ZipBackup.UI {
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(611, 275);
+            this.btnDelete.Location = new System.Drawing.Point(323, 292);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(191, 40);
+            this.btnDelete.Size = new System.Drawing.Size(85, 23);
             this.btnDelete.TabIndex = 3;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -121,9 +128,9 @@ namespace ZipBackup.UI {
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point(8, 275);
+            this.btnAdd.Location = new System.Drawing.Point(12, 292);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(191, 40);
+            this.btnAdd.Size = new System.Drawing.Size(85, 23);
             this.btnAdd.TabIndex = 1;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
@@ -132,9 +139,9 @@ namespace ZipBackup.UI {
             // btnEdit
             // 
             this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEdit.Location = new System.Drawing.Point(205, 275);
+            this.btnEdit.Location = new System.Drawing.Point(103, 292);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(191, 40);
+            this.btnEdit.Size = new System.Drawing.Size(85, 23);
             this.btnEdit.TabIndex = 2;
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
@@ -143,20 +150,13 @@ namespace ZipBackup.UI {
             // btnSuggestions
             // 
             this.btnSuggestions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSuggestions.Location = new System.Drawing.Point(402, 275);
+            this.btnSuggestions.Location = new System.Drawing.Point(194, 292);
             this.btnSuggestions.Name = "btnSuggestions";
-            this.btnSuggestions.Size = new System.Drawing.Size(203, 40);
+            this.btnSuggestions.Size = new System.Drawing.Size(123, 23);
             this.btnSuggestions.TabIndex = 4;
             this.btnSuggestions.Text = "Suggestions..";
             this.btnSuggestions.UseVisualStyleBackColor = true;
             this.btnSuggestions.Click += new System.EventHandler(this.btnSuggestions_Click);
-            // 
-            // backupnowToolStripMenuItem
-            // 
-            this.backupnowToolStripMenuItem.Name = "backupnowToolStripMenuItem";
-            this.backupnowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.backupnowToolStripMenuItem.Text = "Backup &now";
-            this.backupnowToolStripMenuItem.Click += new System.EventHandler(this.backupnowToolStripMenuItem_Click);
             // 
             // SourceConfig
             // 

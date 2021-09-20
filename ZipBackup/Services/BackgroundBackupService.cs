@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using log4net;
 using log4net.Repository.Hierarchy;
 using ZipBackup.Backups;
+using ZipBackup.Settings;
 using ZipBackup.Utils;
 
 namespace ZipBackup.Services {

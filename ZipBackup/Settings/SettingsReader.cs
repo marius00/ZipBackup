@@ -2,9 +2,8 @@
 using System.IO;
 using log4net;
 using Newtonsoft.Json;
-using ZipBackup.Services;
 
-namespace ZipBackup.Utils {
+namespace ZipBackup.Settings {
     class SettingsReader {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(SettingsReader));
 
@@ -67,7 +66,8 @@ namespace ZipBackup.Utils {
                 BackupSources = new (),
                 BackupDestinations = new(),
                 StartMinimized = false,
-                
+                DefaultExclusionPattern = "node_modules|build|bin\\\\debug|bin\\\\release|\\.lock$|-shm$|-wal$"
+
             }, filename);
         }
     }
