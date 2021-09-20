@@ -26,6 +26,7 @@ namespace ZipBackup.UI {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbStartMinimized = new System.Windows.Forms.CheckBox();
             this.cbStartOnSystemBoot = new System.Windows.Forms.CheckBox();
             this.tbErrorThreshold = new System.Windows.Forms.TextBox();
             this.lbErrorThreshold = new System.Windows.Forms.Label();
@@ -39,7 +40,7 @@ namespace ZipBackup.UI {
             this.passwordInput1 = new System.Windows.Forms.MaskedTextBox();
             this.tbFilePattern = new System.Windows.Forms.TextBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.cbStartMinimized = new System.Windows.Forms.CheckBox();
+            this.linkFilenamePatternHelp = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
@@ -49,6 +50,7 @@ namespace ZipBackup.UI {
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.linkFilenamePatternHelp);
             this.groupBox1.Controls.Add(this.cbStartMinimized);
             this.groupBox1.Controls.Add(this.cbStartOnSystemBoot);
             this.groupBox1.Controls.Add(this.tbErrorThreshold);
@@ -69,6 +71,18 @@ namespace ZipBackup.UI {
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Misc configurations";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // cbStartMinimized
+            // 
+            this.cbStartMinimized.AutoSize = true;
+            this.cbStartMinimized.Location = new System.Drawing.Point(44, 192);
+            this.cbStartMinimized.Name = "cbStartMinimized";
+            this.cbStartMinimized.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.cbStartMinimized.Size = new System.Drawing.Size(109, 19);
+            this.cbStartMinimized.TabIndex = 12;
+            this.cbStartMinimized.Text = "Start minimized";
+            this.cbStartMinimized.UseVisualStyleBackColor = true;
+            this.cbStartMinimized.CheckedChanged += new System.EventHandler(this.cbStartMinimized_CheckedChanged);
             // 
             // cbStartOnSystemBoot
             // 
@@ -138,7 +152,7 @@ namespace ZipBackup.UI {
             // lbPatternPreview
             // 
             this.lbPatternPreview.AutoSize = true;
-            this.lbPatternPreview.Location = new System.Drawing.Point(373, 23);
+            this.lbPatternPreview.Location = new System.Drawing.Point(386, 24);
             this.lbPatternPreview.Name = "lbPatternPreview";
             this.lbPatternPreview.Size = new System.Drawing.Size(84, 15);
             this.lbPatternPreview.TabIndex = 2;
@@ -184,17 +198,16 @@ namespace ZipBackup.UI {
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // cbStartMinimized
+            // linkFilenamePatternHelp
             // 
-            this.cbStartMinimized.AutoSize = true;
-            this.cbStartMinimized.Location = new System.Drawing.Point(44, 192);
-            this.cbStartMinimized.Name = "cbStartMinimized";
-            this.cbStartMinimized.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.cbStartMinimized.Size = new System.Drawing.Size(109, 19);
-            this.cbStartMinimized.TabIndex = 12;
-            this.cbStartMinimized.Text = "Start minimized";
-            this.cbStartMinimized.UseVisualStyleBackColor = true;
-            this.cbStartMinimized.CheckedChanged += new System.EventHandler(this.cbStartMinimized_CheckedChanged);
+            this.linkFilenamePatternHelp.AutoSize = true;
+            this.linkFilenamePatternHelp.Location = new System.Drawing.Point(373, 23);
+            this.linkFilenamePatternHelp.Name = "linkFilenamePatternHelp";
+            this.linkFilenamePatternHelp.Size = new System.Drawing.Size(12, 15);
+            this.linkFilenamePatternHelp.TabIndex = 13;
+            this.linkFilenamePatternHelp.TabStop = true;
+            this.linkFilenamePatternHelp.Text = "?";
+            this.linkFilenamePatternHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkFilenamePatternHelp_LinkClicked);
             // 
             // MiscConfig
             // 
@@ -230,5 +243,6 @@ namespace ZipBackup.UI {
         private System.Windows.Forms.Label lbErrorThreshold;
         private System.Windows.Forms.CheckBox cbStartOnSystemBoot;
         private System.Windows.Forms.CheckBox cbStartMinimized;
+        private System.Windows.Forms.LinkLabel linkFilenamePatternHelp;
     }
 }

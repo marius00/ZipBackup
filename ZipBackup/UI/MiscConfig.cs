@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -54,6 +55,11 @@ namespace ZipBackup.UI {
 
             passwordInput1.Enter += PasswordInput_GotFocus;
             passwordInput2.Enter += PasswordInput_GotFocus;
+
+            if (string.IsNullOrEmpty(_appSettings.ZipPasswordPlaintext)) {
+                passwordInput1.Text = "";
+                passwordInput2.Text = "";
+            }
         }
 
         private void PasswordInput_GotFocus(object sender, EventArgs e) {
@@ -109,6 +115,14 @@ namespace ZipBackup.UI {
             if (sender is CheckBox cb) {
                 _appSettings.StartMinimized = cb.Checked;
             }
+        }
+
+        private void linkFilenamePatternHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            ProcessStartInfo psi = new ProcessStartInfo {
+                FileName = "https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings",
+                UseShellExecute = true
+            };
+            Process.Start(psi);
         }
     }
 }
