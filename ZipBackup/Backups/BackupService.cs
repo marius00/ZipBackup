@@ -69,7 +69,7 @@ namespace ZipBackup.Backups {
                     try {
                         if (Backup(source, tempFileName, plaintextPassword)) {
                             foreach (var dest in destinations) {
-                                File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true); // TODO: IOException
+                                File.Copy(tempFileName, Path.Combine(dest.Folder, Format(source.Name)), true);
                             }
 
                             // Success: No more errors.
@@ -77,16 +77,14 @@ namespace ZipBackup.Backups {
                             source.NextUpdate = DateTime.UtcNow.AddHours(_appSettings.BackupIntervalHours).ToTimestamp();
                         }
                         else {
-                            // Retry in 45 minutes
-                            source.NextUpdate = DateTime.UtcNow.AddMinutes(45).ToTimestamp();
-                            if (source.Errors.Count >= _appSettings.ErrorThreshold) {
-                                OnError?.Invoke(this, new BackupErrorEventArg {
-                                    Component = source.Name,
-                                    Content = $"Error backing up {source.Name}\n{string.Join("\n", source.Errors)}"
-                                });
-                            }
+                            OnBackupError(source);
                         }
 
+                    }
+                    catch (Exception ex) {
+                        Logger.Warn(ex.Message, ex);
+                        source.Errors.Add($"Unknown error backing up {source.Name}\n{ex.Message}");
+                        OnBackupError(source);
                     }
                     finally {
                         File.Delete(tempFileName);
@@ -95,6 +93,17 @@ namespace ZipBackup.Backups {
             }
 
             _appSettings.BackupSourcesHasMutated();
+        }
+
+        private void OnBackupError(BackupSourceEntry source) {
+            // Retry in 45 minutes
+            source.NextUpdate = DateTime.UtcNow.AddMinutes(45).ToTimestamp();
+            if (source.Errors.Count >= _appSettings.ErrorThreshold) {
+                OnError?.Invoke(this, new BackupErrorEventArg {
+                    Component = source.Name,
+                    Content = $"Error backing up {source.Name}\n{string.Join("\n", source.Errors)}"
+                });
+            }
         }
 
         /// <summary>
