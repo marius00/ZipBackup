@@ -95,7 +95,7 @@ namespace ZipBackup.UI {
             lvi.SubItems.Add(entry.Folder);
             lvi.SubItems.Add(entry.InclusionMask);
             lvi.SubItems.Add(entry.ExclusionMask);
-            lvi.SubItems.Add(DateTimeEpochExtension.FromTimestamp(entry.NextUpdate).ToString("yyyy-MM-dd HH:mm"));
+            lvi.SubItems.Add(entry.NextUpdate > 0 ? DateTimeEpochExtension.FromTimestamp(entry.NextUpdate).ToString("yyyy-MM-dd HH:mm") : "Now..");
             lvi.Tag = entry;
 
             return lvi;

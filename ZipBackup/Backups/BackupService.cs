@@ -222,7 +222,7 @@ namespace ZipBackup.Backups {
 
   
 
-            using (ZipFile zip = new ZipFile()) {
+            using (ZipFile zip = new ZipFile() { UseZip64WhenSaving  = Zip64Option.Always }) {
                 if (!string.IsNullOrEmpty(plaintextPassword)) {
                     zip.Password = plaintextPassword; ;
                     zip.Encryption = EncryptionAlgorithm.WinZipAes256;
