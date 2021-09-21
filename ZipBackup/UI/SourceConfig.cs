@@ -23,6 +23,7 @@ namespace ZipBackup.UI {
         private readonly BackupService _backupService;
         private readonly NotificationService _notificationService;
         private System.Windows.Forms.Timer _refreshListviewTimer;
+        private bool _hasModiifedList = false;
 
         public SourceConfig(AppSettings appSettings, BackupService backupService, NotificationService notificationService) {
             _appSettings = appSettings;
@@ -45,13 +46,16 @@ namespace ZipBackup.UI {
 
             _refreshListviewTimer = new System.Windows.Forms.Timer {Interval = 5000};
             _refreshListviewTimer.Tick += _refreshListviewTimer_Tick;
-            ;
             _refreshListviewTimer.Start();
+
+            // Skip refreshes if the list is unmodified
+            _appSettings.OnMutate += (_, ___) => _hasModiifedList = true;
         }
 
         private void _refreshListviewTimer_Tick(object sender, EventArgs e) {
-            if (Visible) {
+            if (Visible && _hasModiifedList) {
                 UpdateListview();
+                _hasModiifedList = false;
             }
         }
 

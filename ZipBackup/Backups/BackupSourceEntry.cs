@@ -40,7 +40,7 @@ namespace ZipBackup.Backups {
 
         public override bool Equals(object? obj) {
             if (obj is BackupSourceEntry entry) {
-                return Folder.Equals(entry.Folder);
+                return Folder.Equals(entry.Folder) && Name.Equals(entry.Name) && Recursive == entry.Recursive && NextUpdate == entry.NextUpdate && ExclusionMask == entry.ExclusionMask && InclusionMask == entry.InclusionMask;
             }
 
             return base.Equals(obj);
