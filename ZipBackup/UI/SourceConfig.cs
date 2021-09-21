@@ -49,7 +49,9 @@ namespace ZipBackup.UI {
             _refreshListviewTimer.Start();
 
             // Skip refreshes if the list is unmodified
-            _appSettings.OnMutate += (_, ___) => _hasModiifedList = true;
+            _appSettings.OnMutate += (_, ___) => {
+                _hasModiifedList = true;
+            };
         }
 
         private void _refreshListviewTimer_Tick(object sender, EventArgs e) {

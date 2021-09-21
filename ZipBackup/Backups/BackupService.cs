@@ -65,13 +65,16 @@ namespace ZipBackup.Backups {
             }
 
             // Backup each source folder
+            bool hasMutated = false;
             foreach (var source in sources) {
                 if (CanBackup(source)) {
                     PerformBackup(source, plaintextPassword);
+                    hasMutated = true;
                 }
             }
 
-            _appSettings.BackupSourcesHasMutated();
+            if (hasMutated)
+                _appSettings.BackupSourcesHasMutated();
         }
 
 
