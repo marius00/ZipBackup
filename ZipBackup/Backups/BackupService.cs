@@ -37,7 +37,7 @@ namespace ZipBackup.Backups {
             }
 
             // Include our own config as well
-            if (sources.All(src => src.Folder != GlobalPaths.CoreFolder)) {
+            if (sources.All(src => src.Folder != EnvPathConverterUtil.ToEnvironmentalPath(GlobalPaths.CoreFolder))) {
                 _appSettings.AddBackupSource(new BackupSourceEntry {
                     Folder = EnvPathConverterUtil.ToEnvironmentalPath(GlobalPaths.CoreFolder),
                     Name = "ZipBackup",
