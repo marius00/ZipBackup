@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -107,6 +108,24 @@ namespace ZipBackup.UI {
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
             btnDelete_Click(sender, e);
+        }
+
+        private void browseToToolstripMenuItem_Click(object sender, EventArgs e) {
+
+            if (listView1.SelectedItems.Count == 0)
+                MessageBox.Show("Error - Nothing selected");
+            else {
+                foreach (ListViewItem lvi in listView1.SelectedItems) {
+                    var entry = (BackupDestinationEntry)lvi.Tag;
+                    ProcessStartInfo psi = new ProcessStartInfo {
+                        FileName = entry.Folder,
+                        UseShellExecute = true
+                    };
+
+                    Process.Start(psi);
+                    return;
+                }
+            }
         }
     }
 }
