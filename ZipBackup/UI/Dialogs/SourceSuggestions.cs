@@ -49,12 +49,16 @@ namespace ZipBackup.UI.Dialogs {
                 new Suggestion { Path = @"%Appdata%\StardewValley", Name = "Stardew Valley" },
                 new Suggestion { Path = @"%appdata%\..\LocalLow\Redbeet Interactive\Raft\User", Name = "Raft" },
                 new Suggestion { Path = @"%userprofile%\Documents\Dyson Sphere Program", Name = "Dyson Sphere Program" },
+                new Suggestion { Path = @"%userprofile%\Documents\Klei", Name = "Oxygen not included" },
                 new Suggestion { Path = @"%appdata%\Postman\Partitions", Name = "Postman" },
                 new Suggestion { Path = @"%LocalAppData%\Logitech\Logitech Gaming Software", Name = "Logitech Gaming Software" },
                 new Suggestion { Path = @"%appdata%\Mozilla\Firefox", Name = "Firefox" },
                 new Suggestion { Path = @"%programfiles%\OpenVPN\config", Name = "OpenVPN certs" },
                 new Suggestion { Path = @"%LocalAppData%\PersistentWindows", Name = "PersistentWindows" },
                 new Suggestion { Path = @"%programdata%\FlashFXP\5", Name = "FlashFXP 5" },
+                new Suggestion { Path = @"%appdata%\..\LocalLow\Noble Muffins\Thief Simulator", Name = "Thief Simulator" },
+                new Suggestion { Path = @"%appdata%\..\LocalLow\IronGate\Valheim", Name = "Valheim" },
+                new Suggestion { Path = @"%userprofile%\Saved Games", Name = "Elex & other retarded games savegames" },
             };
 
             var existing = _appSettings.BackupSources.Select(s => s.Folder).ToList();
