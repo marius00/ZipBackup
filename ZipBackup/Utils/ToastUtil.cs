@@ -7,8 +7,9 @@ namespace ZipBackup.Utils {
         public static void Show(params string[] content) {
             var builder = new ToastContentBuilder();
 
-            foreach (var body in content) {
-                builder.AddText(body);
+            // Supposedly the maximum toast size is 4 lines.
+            for (int i = 0; i < Math.Min(content.Length, 4); i++) {
+                builder.AddText(content[i]);
             }
 
             // Only add the logo if we cant find it. If the working directory has changed for any reason, this will fail.
