@@ -31,6 +31,18 @@ namespace ZipBackup.Backups {
                 return;
 
             var destinations = _appSettings.BackupDestinations.ToList();
+            foreach (var dest in destinations) {
+                if (!Directory.Exists(dest.Folder)) {
+                    OnError?.Invoke(this, new BackupErrorEventArg {
+                        Component = "Dest" + dest.Name,
+                        Content = $"Error: The backup destination \"{dest.Folder}\" does not exist"
+                    });
+
+                    return;
+                }
+            }
+
+
             if (destinations.Count == 0) {
                 Logger.Debug($"Attempting to perform backup of {sources.Count} sources, but no destinations are configured. Aborting.");
                 return;
@@ -113,7 +125,18 @@ namespace ZipBackup.Backups {
         /// <param name="plaintextPassword"></param>
         /// <returns></returns>
         private bool PerformBackup(BackupSourceEntry source, string plaintextPassword) {
-            var destinations = _appSettings.BackupDestinations.ToList(); // TODO: Toast if empty
+            var destinations = _appSettings.BackupDestinations.ToList();
+            foreach (var dest in destinations) {
+                if (!Directory.Exists(dest.Folder)) {
+                    OnError?.Invoke(this, new BackupErrorEventArg {
+                        Component = "Dest" + dest.Name,
+                        Content = $"Error: The backup destination \"{dest.Folder}\" does not exist"
+                    });
+
+                    return false;
+                }
+            }
+
             if (destinations.Count == 0) {
                 OnError?.Invoke(this, new BackupErrorEventArg {
                     Component = Guid.NewGuid().ToString(), // "Always show"
@@ -224,7 +247,7 @@ namespace ZipBackup.Backups {
 
             using (ZipFile zip = new ZipFile() { UseZip64WhenSaving  = Zip64Option.Always }) {
                 if (!string.IsNullOrEmpty(plaintextPassword)) {
-                    zip.Password = plaintextPassword; ;
+                    zip.Password = plaintextPassword;
                     zip.Encryption = EncryptionAlgorithm.WinZipAes256;
                 }
 
